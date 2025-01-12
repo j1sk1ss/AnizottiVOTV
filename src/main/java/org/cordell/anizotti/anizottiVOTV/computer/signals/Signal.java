@@ -1,4 +1,4 @@
-package org.cordell.anizotti.anizottiVOTV.computer.finder;
+package org.cordell.anizotti.anizottiVOTV.computer.signals;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ public class Signal {
 
     private static final String KEY = "secret-key-anizotti-votv";
 
-    private static String xorEncryptDecrypt(String data) {
+    public static String xorEncryptDecrypt(String data) {
         char[] key = KEY.toCharArray();
         char[] input = data.toCharArray();
         char[] result = new char[input.length];
@@ -42,8 +42,4 @@ public class Signal {
     private int type;
     private String data;
     private boolean isDecrypted;
-
-    public String decryptData() {
-        return xorEncryptDecrypt(data);
-    }
 }

@@ -1,4 +1,4 @@
-package org.cordell.anizotti.anizottiVOTV.computer.finder;
+package org.cordell.anizotti.anizottiVOTV.computer.signals;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +12,7 @@ import org.cordell.anizotti.anizottiVOTV.computer.Computer;
 
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
+import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
 import org.j1sk1ss.menuframework.objects.interactive.components.Bar;
 import org.j1sk1ss.menuframework.objects.interactive.components.ClickArea;
@@ -23,7 +24,7 @@ import org.j1sk1ss.menuframework.objects.nonInteractive.Margin;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.cordell.anizotti.anizottiVOTV.computer.finder.Signal.generateSignal;
+import static org.cordell.anizotti.anizottiVOTV.computer.signals.Signal.generateSignal;
 
 
 public class Finder extends Computer {
@@ -81,13 +82,14 @@ public class Finder extends Computer {
                             }
                         }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, signal.getType() * 60L);
 
-                        var signalBody = new Item("Signal", "Data: " + signal.getData());
+                        var signalBody = new Item("Signal", signal.getData());
                         Manager.setInteger2Container(signalBody, 1, "is_signal");
+                        Manager.setInteger2Container(signalBody, signal.getType(), "signal_type");
                         Manager.giveItems(signalBody, player);
                         moveTelescope(event, space, 0, 0);
                     }
                 }) // Scan signal
-            ), "finder"
+            ), "finder", MenuSizes.SixLines
         )
     ), "finderMenu");
 
@@ -135,6 +137,7 @@ public class Finder extends Computer {
 
     @Override
     public void computerClick(Player player) {
-        finderInterface.getPanel("finderMenu").getView(player);
+        if (!this.isPowered) return;
+        finderInterface.getPanel("finder").getView(player);
     }
 }
