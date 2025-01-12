@@ -1,2 +1,4 @@
-package org.cordell.anizotti.anizottiVOTV.computer;public class Generator {
+package org.cordell.anizotti.anizottiVOTV.computer;
+
+public class Generator {
 }

@@ -1,2 +1,4 @@
-package org.cordell.anizotti.anizottiVOTV.computer;public class Server {
+package org.cordell.anizotti.anizottiVOTV.computer;
+
+public class Server {
 }

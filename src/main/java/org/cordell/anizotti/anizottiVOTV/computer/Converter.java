@@ -1,2 +1,4 @@
-package org.cordell.anizotti.anizottiVOTV.computer;public class Converter {
+package org.cordell.anizotti.anizottiVOTV.computer;
+
+public class Converter {
 }
