@@ -4,42 +4,81 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
+import org.bukkit.scheduler.BukkitRunnable;
+import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.Utils;
 
+import org.j1sk1ss.itemmanager.manager.Item;
+import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
 import org.j1sk1ss.menuframework.objects.interactive.components.ClickArea;
+import org.j1sk1ss.menuframework.objects.interactive.components.LittleButton;
 import org.j1sk1ss.menuframework.objects.interactive.components.Panel;
 import org.j1sk1ss.menuframework.objects.nonInteractive.Margin;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 
 public class Server extends Computer {
-    private static final ArrayList<Server> servers = new ArrayList<>();
+    public static final ArrayList<Server> servers = new ArrayList<>();
+
+    public static void serverCrush() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (servers.isEmpty()) return;
+                int serverIndex = new Random().nextInt(servers.size());
+                if (!servers.get(serverIndex).isWork) return;
+
+                System.out.println("Server " + servers.get(serverIndex).name + " crush");
+                servers.get(serverIndex).isWork = false;
+                ComputerManager.breakComputers();
+            }
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 150L);
+    }
+
+    public static boolean checkServers() {
+        for (Server server : servers) if (!server.isWork) return false;
+        return true;
+    }
 
     private static final MenuWindow serverInterface = new MenuWindow(List.of(
         new Panel(
             List.of(
-                new ClickArea(new Margin(0, 8, 6), (event, menu) -> {
-                    event.getInventory().setItem(event.getSlot(), new ItemStack(Material.GREEN_CONCRETE));
+                new ClickArea(new Margin(0, 2, 8), (event, menu) -> {
+                    var item = event.getInventory().getItem(event.getSlot());
+                    if (item == null) return;
+
+                    event.getInventory().setItem(event.getSlot(), new Item("FIXED", "", Material.GREEN_CONCRETE));
                     if (checkServerWindow(event.getInventory())) {
-                        var server = getServer(Utils.getInventoryTitle(event));
+                        var server = getServer(Utils.getInventoryTitle(event).split(" ")[1]);
                         if (server != null) {
                             server.isWork = true;
                             event.getWhoClicked().closeInventory();
+                            if (checkServers()) ComputerManager.fixComputers();
                         }
                     }
-                }, "server_area", "")
-            ), "server"
+                }, "server_area", ""),
+                new LittleButton(new Margin(27, 0, 0), "Update", "", (event, menu) -> {
+                    for (int i = 0; i < 27; i++) {
+                        if (new Random().nextBoolean()) {
+                            event.getInventory().setItem(i, new Item("BAD SECTOR", "", Material.RED_SAND));
+                        }
+                    }
+                })
+            ), "server", MenuSizes.FourLines
         )
     ), "serverMenu");
 
     private static boolean checkServerWindow(Inventory inventory) {
-        for (var item : inventory.getContents()) if (item.getType().equals(Material.RED_SAND)) return false;
+        for (var item : inventory.getContents()) {
+            if (item == null) continue;
+            if (item.getType().equals(Material.RED_SAND)) return false;
+        }
         return true;
     }
 
@@ -64,6 +103,6 @@ public class Server extends Computer {
     @Override
     public void computerClick(Player player) {
         if (this.isWork) return;
-        serverInterface.getPanel("server").getView(player, name);
+        serverInterface.getPanel("server").getView(player, "server " + name);
     }
 }

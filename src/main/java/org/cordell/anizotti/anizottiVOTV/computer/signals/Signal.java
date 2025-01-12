@@ -10,7 +10,10 @@ import java.util.Random;
 @Setter
 public class Signal {
     public static Signal generateSignal(int maxX, int maxY, String data) {
-        return new Signal(new Random().nextInt(maxX), new Random().nextInt(maxY), new Random().nextInt(6), xorEncryptDecrypt(data));
+        var x = new Random().nextInt(maxX);
+        var y = new Random().nextInt(maxY);
+        System.out.println("Generating signal at " + x + " " + y + " " + data);
+        return new Signal(x, y, new Random().nextInt(6), xorEncryptDecrypt(data));
     }
 
     private static final String KEY = "secret-key-anizotti-votv";
