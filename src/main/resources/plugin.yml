@@ -1,0 +1,4 @@
+name: AnizottiVOTV
+version: '1.0-SNAPSHOT'
+main: org.cordell.anizotti.anizottiVOTV.AnizottiVOTV
+api-version: '1.21'
