@@ -21,3 +21,5 @@ commands:
     usage: "/give-money"
   money:
     usage: "/money"
+  status-spawn:
+    usage: "/status-spawn"

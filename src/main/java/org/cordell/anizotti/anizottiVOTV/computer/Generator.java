@@ -25,9 +25,9 @@ public class Generator extends Computer {
                 if (!main.isWork) return;
                 System.out.println("Generator crush");
                 main.isWork = false;
-                ComputerManager.breakComputers();
+                ComputerManager.turnOffComputers();
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 150L);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 15000L);
     }
 
     private static final MenuWindow serverInterface = new MenuWindow(List.of(
@@ -37,6 +37,7 @@ public class Generator extends Computer {
                     if (main != null) {
                         main.isWork = true;
                         event.getWhoClicked().closeInventory();
+                        ComputerManager.turnOnComputers();
                     }
                 })
             ), "generator", MenuSizes.ThreeLines
@@ -49,6 +50,7 @@ public class Generator extends Computer {
         this.baseBlock = baseBlock;
         this.name = name;
         isWork = true;
+        this.model = "generator";
     }
 
     private boolean isWork;

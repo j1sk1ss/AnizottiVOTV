@@ -24,21 +24,27 @@ import java.util.Random;
 
 
 public class Server extends Computer {
+    public static int durability = 4;
+
     public static final ArrayList<Server> servers = new ArrayList<>();
 
     public static void serverCrush() {
         new BukkitRunnable() {
+            int loop = 0;
             @Override
             public void run() {
-                if (servers.isEmpty()) return;
-                int serverIndex = new Random().nextInt(servers.size());
-                if (!servers.get(serverIndex).isWork) return;
+                if (loop++ >= durability) {
+                    if (servers.isEmpty()) return;
+                    int serverIndex = new Random().nextInt(servers.size());
+                    if (!servers.get(serverIndex).isWork) return;
 
-                System.out.println("Server " + servers.get(serverIndex).name + " crush");
-                servers.get(serverIndex).isWork = false;
-                ComputerManager.breakComputers();
+                    System.out.println("Server " + servers.get(serverIndex).name + " crush");
+                    servers.get(serverIndex).isWork = false;
+                    ComputerManager.disconnectComputers(1);
+                    loop = 0;
+                }
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 150L);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, new Random().nextInt(4) * 150L);
     }
 
     public static boolean checkServers() {
@@ -59,7 +65,7 @@ public class Server extends Computer {
                         if (server != null) {
                             server.isWork = true;
                             event.getWhoClicked().closeInventory();
-                            if (checkServers()) ComputerManager.fixComputers();
+                            if (checkServers()) ComputerManager.connectComputers(1);
                         }
                     }
                 }, "server_area", ""),
@@ -96,9 +102,10 @@ public class Server extends Computer {
         this.baseBlock = baseBlock;
         this.name = name;
         isWork = true;
+        this.model = "server";
     }
 
-    private boolean isWork;
+    public boolean isWork;
 
     @Override
     public void computerClick(Player player) {

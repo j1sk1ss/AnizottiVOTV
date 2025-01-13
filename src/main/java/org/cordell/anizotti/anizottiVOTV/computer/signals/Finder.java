@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.computer.Computer;
 
+import org.cordell.anizotti.anizottiVOTV.managment.DaysManager;
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
@@ -21,12 +22,13 @@ import org.j1sk1ss.menuframework.objects.nonInteractive.Margin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.cordell.anizotti.anizottiVOTV.computer.signals.Signal.generateSignal;
 
 
 public class Finder extends Computer {
-    private static int speed = 1;
+    public static int speed = 1;
 
     private static int x;
     private static int y;
@@ -34,14 +36,14 @@ public class Finder extends Computer {
     private static final ArrayList<Signal> signals = new ArrayList<>();
     private static final int MAX_SIGNALS = 10;
 
-    private static void startSignalGeneration(int maxX, int maxY, int intervalSeconds) {
+    private static void startSignalGeneration() {
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (signals.size() >= MAX_SIGNALS) return;
-                signals.add(generateSignal(maxX, maxY, "HELLO, I`M SPACE KITTY))))"));
+                signals.add(generateSignal(50, 50, Signals.signals.get(DaysManager.day).get(new Random().nextInt(Signals.signals.get(DaysManager.day).size()))));
             }
-        }.runTaskTimerAsynchronously(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, intervalSeconds * 20L);
+        }.runTaskTimerAsynchronously(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 60 * 20L);
     }
 
     private static final MenuWindow finderInterface = new MenuWindow(List.of(
@@ -94,7 +96,11 @@ public class Finder extends Computer {
                                     }
                                 }
                             }
-                        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, (signal.getType() / speed) * 20L);
+                        }.runTaskTimer(
+                            AnizottiVOTV.getPlugin(AnizottiVOTV.class),
+                            0,
+                            (signal.getType() / Math.min(speed, 1)) * (20L * (6 / Math.min(Finder.connectLevel, 1)))
+                        );
                     }
                 }) // Scan signal
             ), "finder", MenuSizes.SixLines
@@ -139,14 +145,19 @@ public class Finder extends Computer {
     // Non-static logic
 
     public Finder(Block baseBlock) {
-        startSignalGeneration(50, 50, 60);
+        startSignalGeneration();
         this.baseBlock = baseBlock;
         this.isPowered = true;
+        this.model = "finder";
     }
 
     @Override
     public void computerClick(Player player) {
-        if (!this.isPowered) return;
+        if (!this.isPowered) {
+            player.sendMessage("Seems finder powered off...");
+            return;
+        }
+
         finderInterface.getPanel("finder").getView(player);
     }
 }

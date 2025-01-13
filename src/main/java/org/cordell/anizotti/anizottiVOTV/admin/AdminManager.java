@@ -7,10 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import org.bukkit.inventory.EquipmentSlot;
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
-import org.cordell.anizotti.anizottiVOTV.computer.ComputerManager;
-import org.cordell.anizotti.anizottiVOTV.computer.Generator;
-import org.cordell.anizotti.anizottiVOTV.computer.Server;
-import org.cordell.anizotti.anizottiVOTV.computer.Shop;
+import org.cordell.anizotti.anizottiVOTV.computer.*;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
 import org.cordell.anizotti.anizottiVOTV.managment.CargoManager;
@@ -55,6 +52,10 @@ public class AdminManager implements Listener {
             case "cargo-spawn":
                 Bukkit.getPluginManager().registerEvents(new CargoManager(block), AnizottiVOTV.getPlugin(AnizottiVOTV.class));
                 System.out.println("Cargo spawned!");
+                break;
+            case "status-spawn":
+                ComputerManager.computers.add(new StatusScanner(block));
+                System.out.println("Status spawned!");
                 break;
             default:
                 return;

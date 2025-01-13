@@ -17,6 +17,8 @@ import java.util.List;
 
 
 public class Converter extends Computer {
+    public static int speed = 1;
+
     private static final MenuWindow converterInterface = new MenuWindow(List.of(
         new Panel(
             List.of(
@@ -37,11 +39,12 @@ public class Converter extends Computer {
                                     player.sendMessage("Progress: " + progress * (100 / delay) + "%");
                                     if (progress == delay) {
                                         Manager.setLore(signal, Signal.xorEncryptDecrypt(String.join("", Manager.getLoreLines(signal))));
+                                        Manager.setInteger2Container(signal, 1, "is_decrypted");
                                         cancel();
                                     }
                                 }
                             }
-                        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, signalType * 20L);
+                        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, (signalType / speed) * 20L);
                     }
                 })
             ), "converter", MenuSizes.ThreeLines
@@ -53,11 +56,16 @@ public class Converter extends Computer {
     public Converter(Block baseBlock) {
         this.baseBlock = baseBlock;
         this.isPowered = true;
+        this.model = "converter";
     }
 
     @Override
     public void computerClick(Player player) {
-        if (!this.isPowered) return;
+        if (!this.isPowered) {
+            player.sendMessage("Seems converter powered off...");
+            return;
+        }
+
         converterInterface.getPanel("converter").getView(player);
     }
 }

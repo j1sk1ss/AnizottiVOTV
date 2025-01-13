@@ -17,6 +17,9 @@ public class CommandManager implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         var player = (Player) commandSender;
         switch (command.getName()) {
+            case "status-spawn":
+                Manager.giveItems(new Item("status-spawn", "status-spawn"), player);
+                break;
             case "server-spawn":
                 Manager.giveItems(new Item("server-spawn", strings[0]), player);
                 break;

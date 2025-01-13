@@ -1,7 +1,10 @@
 package org.cordell.anizotti.anizottiVOTV.computer;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;
+import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
 import org.cordell.anizotti.anizottiVOTV.managment.CargoManager;
 import org.cordell.anizotti.anizottiVOTV.managment.MoneyManager;
 
@@ -23,6 +26,8 @@ public class Shop extends Computer {
     private static final double applePrice = 65d;
     private static final double horsePrice = 1250d;
     private static final double swordPrice = 1000d;
+    private static final double shovelPrice = 500d;
+    private static final double cargoPrice = 100d;
 
     private static final MenuWindow shopUpgradeInterface = new MenuWindow(List.of(
         new Panel(List.of(
@@ -35,7 +40,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }),
+            }, Material.STICK),
             new LittleButton(new Margin(1, 0, 0), "Buy bread x16", breadPrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -45,7 +50,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }),
+            }, Material.BREAD),
             new LittleButton(new Margin(2, 0, 0), "Buy soup", soupPrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -55,7 +60,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }),
+            }, Material.BEETROOT_SOUP),
             new LittleButton(new Margin(3, 0, 0), "Buy meat x12", meatPrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -65,7 +70,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }),
+            }, Material.COOKED_BEEF),
             new LittleButton(new Margin(4, 0, 0), "Buy apple x12", applePrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -75,7 +80,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }),
+            }, Material.APPLE),
             new LittleButton(new Margin(5, 0, 0), "Buy horse", horsePrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -85,7 +90,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }),
+            }, Material.IRON_HORSE_ARMOR),
             new LittleButton(new Margin(6, 0, 0), "Buy sword", swordPrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -95,8 +100,99 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            })
-        ), "shop", MenuSizes.SixLines)
+            }, Material.DIAMOND_SWORD),
+            new LittleButton(new Margin(7, 0, 0), "Buy container", cargoPrice + "$", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (MoneyManager.removeMoney(cargoPrice, player)) {
+                        player.sendMessage("Delivery time is: " + CargoManager.sendCargo("cargo") + "s");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.BEEHIVE),
+            new LittleButton(new Margin(8, 0, 0), "Sell container", "$$$", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                var receiveTime = CargoManager.receiveCargo(player);
+                if (receiveTime != -1) {
+                    player.sendMessage("Sending time is: " + receiveTime + "s");
+                }
+                else {
+                    player.sendMessage("No cargo");
+                }
+            }, Material.EMERALD_BLOCK),
+            new LittleButton(new Margin(9, 0, 0), "Buy shovel", shovelPrice + "$", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (MoneyManager.removeMoney(shovelPrice, player)) {
+                        player.sendMessage("Delivery time is: " + CargoManager.sendCargo("shovel") + "s");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.DIAMOND_SHOVEL),
+            new LittleButton(new Margin(17, 0, 0), "Upgrades", "", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                menu.getPanel("upgrade").getView(player);
+            }, Material.ARROW)
+        ), "shop", MenuSizes.TwoLines),
+        new Panel(List.of(
+            new LittleButton(
+                    new Margin(0, 0, 0), "Upgrade scan speed",
+                    "Cost: " + Finder.speed * 1000 + "\nLevel: " + Finder.speed, (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (Finder.speed >= 8) {
+                        player.sendMessage("Scanner max upgrade speed");
+                        return;
+                    }
+
+                    if (MoneyManager.removeMoney(Finder.speed * 1000, player)) {
+                        Finder.speed += 1;
+                        menu.getPanel("upgrade").getComponent("Upgrade scan speed", LittleButton.class)
+                                .setLore("Cost: " + Finder.speed * 1000 + "\nLevel: " + Finder.speed);
+                        menu.getPanel("upgrade").getView(player);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.ARROW),
+            new LittleButton(
+                    new Margin(1, 0, 0), "Upgrade decode speed",
+                    "Cost: " + Converter.speed * 1250 + "\nLevel: " + Converter.speed, (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (Converter.speed >= 6) {
+                        player.sendMessage("Converter max upgrade speed");
+                        return;
+                    }
+
+                    if (MoneyManager.removeMoney(Converter.speed * 1250, player)) {
+                        Converter.speed += 1;
+                        menu.getPanel("upgrade").getComponent("Upgrade decode speed", LittleButton.class)
+                                .setLore("Cost: " + Converter.speed * 1250 + "\nLevel: " + Converter.speed);
+                        menu.getPanel("upgrade").getView(player);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.ARROW),
+            new LittleButton(
+                    new Margin(2, 0, 0), "Upgrade servers",
+                    "Cost: " + Server.durability * 800 + "\nLevel: " + Server.durability, (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (MoneyManager.removeMoney(Server.durability * 800, player)) {
+                        Server.durability += 1;
+                        menu.getPanel("upgrade").getComponent("Upgrade servers", LittleButton.class)
+                                .setLore("Cost: " + Server.durability * 800 + "\nLevel: " + Server.durability);
+                        menu.getPanel("upgrade").getView(player);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.ARROW)
+        ), "upgrade", MenuSizes.OneLine)
     ), "shopMenu");
 
     // Non-static logic
@@ -104,11 +200,16 @@ public class Shop extends Computer {
     public Shop(Block block) {
         this.baseBlock = block;
         this.isPowered = true;
+        this.model = "shop";
     }
 
     @Override
     public void computerClick(Player player) {
-        if (!this.isPowered) return;
+        if (!this.isPowered) {
+            player.sendMessage("Seems shop powered off...");
+            return;
+        }
+
         shopUpgradeInterface.getPanel("shop").getView(player);
     }
 }

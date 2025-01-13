@@ -4,9 +4,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public abstract class Computer {
-    protected String name;
-    protected Block baseBlock;
+    public String name;
+    public String model;
+    public Block baseBlock;
+
     protected boolean isPowered;
+    protected static int connectLevel;
 
     public abstract void computerClick(Player player);
 }
