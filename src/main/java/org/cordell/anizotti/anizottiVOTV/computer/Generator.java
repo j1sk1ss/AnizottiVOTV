@@ -53,7 +53,7 @@ public class Generator extends Computer {
         this.model = "generator";
     }
 
-    private boolean isWork;
+    public boolean isWork;
 
     @Override
     public void computerClick(Player player) {

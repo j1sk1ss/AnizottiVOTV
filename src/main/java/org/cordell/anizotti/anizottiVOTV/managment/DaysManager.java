@@ -11,8 +11,12 @@ public class DaysManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                day++;
+                newDay();
             }
         }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 20L * 60 * 5, 20L * 60 * 10);
+    }
+
+    public static void newDay() {
+        day++;
     }
 }

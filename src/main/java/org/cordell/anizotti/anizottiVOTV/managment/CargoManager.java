@@ -149,6 +149,9 @@ public class CargoManager implements Listener {
             case "sword" -> Manager.giveItems(new ItemStack(Material.IRON_SWORD), player);
             case "cargo" -> Manager.giveItems(new ItemStack(Material.BEEHIVE), player);
             case "shovel" -> player.performCommand("give @p minecraft:wooden_shovel[can_break={predicates:[{blocks:\"suspicious_sand\"},{blocks:\"suspicious_gravel\"}]}] 1");
+            case "key" -> player.performCommand("give @p minecraft:oak_button[minecraft:can_place_on={predicates:[{blocks:granite}]}] 1");
+            case "secret-key" -> player.performCommand("give @p minecraft:oak_button[minecraft:can_place_on={predicates:[{blocks:polished_granite}]}] 1");
+            case "music-box" -> player.performCommand("give @p minecraft:jukebox[minecraft:can_place_on={predicates:[{blocks:smooth_stone}]}] 1");
         }
 
         block.setType(Material.AIR);

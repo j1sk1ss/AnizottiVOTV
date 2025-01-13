@@ -83,6 +83,8 @@ public final class AnizottiVOTV extends JavaPlugin {
         Server.serverCrush();
         Generator.generatorCrush();
         DaysManager.startDayTimer();
+        KittiesManager.startRandomEvents();
+        FlashLightManager.startLightingTask();
 
         ComputerManager.turnOnComputers();
         ComputerManager.connectComputers(Server.servers.size());

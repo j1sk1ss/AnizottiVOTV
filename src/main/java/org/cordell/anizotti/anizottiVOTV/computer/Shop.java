@@ -28,6 +28,9 @@ public class Shop extends Computer {
     private static final double swordPrice = 1000d;
     private static final double shovelPrice = 500d;
     private static final double cargoPrice = 100d;
+    private static final double keyPrice = 500d;
+    private static final double secretPrice = 2500d;
+    private static final double musicBoxPrice = 499d;
 
     private static final MenuWindow shopUpgradeInterface = new MenuWindow(List.of(
         new Panel(List.of(
@@ -131,6 +134,36 @@ public class Shop extends Computer {
                     throw new RuntimeException(e);
                 }
             }, Material.DIAMOND_SHOVEL),
+            new LittleButton(new Margin(10, 0, 0), "Buy key 1", keyPrice + "$", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (MoneyManager.removeMoney(keyPrice, player)) {
+                        player.sendMessage("Delivery time is: " + CargoManager.sendCargo("key") + "s");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.SPRUCE_BUTTON),
+            new LittleButton(new Margin(11, 0, 0), "Buy key 2", secretPrice + "$", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (MoneyManager.removeMoney(secretPrice, player)) {
+                        player.sendMessage("Delivery time is: " + CargoManager.sendCargo("secret-key") + "s");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.SPRUCE_BUTTON),
+            new LittleButton(new Margin(12, 0, 0), "Buy music box", musicBoxPrice + "$", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (MoneyManager.removeMoney(musicBoxPrice, player)) {
+                        player.sendMessage("Delivery time is: " + CargoManager.sendCargo("music-box") + "s");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.SPRUCE_BUTTON),
             new LittleButton(new Margin(17, 0, 0), "Upgrades", "", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 menu.getPanel("upgrade").getView(player);
