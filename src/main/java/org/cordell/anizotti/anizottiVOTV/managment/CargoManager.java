@@ -1,6 +1,5 @@
 package org.cordell.anizotti.anizottiVOTV.managment;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,15 +31,14 @@ public class CargoManager implements Listener {
     public static Block targetBlock;
 
     public static int sendCargo(String storage) {
-        int deliveryTime = new Random().nextInt(25);
+        int deliveryTime = new Random().nextInt(25) + 1;
         new BukkitRunnable() {
             int progress = 0;
             @Override
             public void run() {
                 if (progress <= deliveryTime) {
-                    System.out.println("Delivery progress: " + progress + " / " + deliveryTime);
                     if (++progress == deliveryTime) {
-                        spawnFallingBlock(targetBlock.getLocation(), Material.BEEHIVE, storage);
+                        spawnFallingBlock(targetBlock.getLocation(), storage);
                         cancel();
                     }
                 }
@@ -57,7 +54,7 @@ public class CargoManager implements Listener {
         var isStorage = getDataFromBlock(cargoBlock, "storage");
         if (isStorage != null) return -1;
 
-        int deliveryTime = new Random().nextInt(25);
+        int deliveryTime = new Random().nextInt(25) + 1;
         new BukkitRunnable() {
             int progress = 0;
             @Override
@@ -179,7 +176,7 @@ public class CargoManager implements Listener {
                         price += tempPrice;
                     }
                     else {
-                        price += 10;
+                        price += item.getAmount();
                     }
                 }
             }
@@ -188,8 +185,8 @@ public class CargoManager implements Listener {
         return price;
     }
 
-    private static void spawnFallingBlock(Location location, Material material, String item) {
-        var fallingBlock = Objects.requireNonNull(location.getWorld()).spawnFallingBlock(location.add(0, 40, 0), material.createBlockData());
+    private static void spawnFallingBlock(Location location, String item) {
+        var fallingBlock = Objects.requireNonNull(location.getWorld()).spawnFallingBlock(location.add(0, 40, 0), Material.BEEHIVE.createBlockData());
 
         fallingBlock.setDropItem(false);
         fallingBlock.setHurtEntities(false);
@@ -201,7 +198,7 @@ public class CargoManager implements Listener {
                     var landedLocation = fallingBlock.getLocation();
                     var landedBlock = landedLocation.getBlock();
 
-                    landedBlock.setType(material);
+                    landedBlock.setType(Material.BEEHIVE);
                     addDataToBlock(landedBlock, "storage", item);
                     cancel();
                 }

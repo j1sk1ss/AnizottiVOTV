@@ -46,6 +46,9 @@ public class Converter extends Computer {
                             }
                         }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, (signalType / speed) * 20L);
                     }
+                    else {
+                        player.sendMessage("Take signal to hand");
+                    }
                 })
             ), "converter", MenuSizes.ThreeLines
         )

@@ -8,8 +8,7 @@ import org.cordell.anizotti.anizottiVOTV.common.LocationManager;
 import org.cordell.anizotti.anizottiVOTV.computer.*;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
-import org.cordell.anizotti.anizottiVOTV.managment.CargoManager;
-import org.cordell.anizotti.anizottiVOTV.managment.DaysManager;
+import org.cordell.anizotti.anizottiVOTV.managment.*;
 import org.cordell.com.cordelldb.manager.Manager;
 
 import java.io.IOException;
@@ -69,7 +68,9 @@ public final class AnizottiVOTV extends JavaPlugin {
         Converter.speed = Math.max(1, Converter.speed);
         DaysManager.day = Math.max(1, DaysManager.day);
 
-        for (var listener : List.of(new AdminManager(), new ComputerManager()))
+        for (var listener : List.of(
+                new AdminManager(), new ComputerManager(), new EatManager(), new MobManager(), new JunkManager()
+        ))
             Bukkit.getPluginManager().registerEvents(listener, this);
 
         var command_manager = new CommandManager();

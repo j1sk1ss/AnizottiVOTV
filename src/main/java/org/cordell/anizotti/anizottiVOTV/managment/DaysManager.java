@@ -13,6 +13,6 @@ public class DaysManager {
             public void run() {
                 day++;
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0L, 20L * 60 * 20);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 20L * 60 * 5, 20L * 60 * 10);
     }
 }
