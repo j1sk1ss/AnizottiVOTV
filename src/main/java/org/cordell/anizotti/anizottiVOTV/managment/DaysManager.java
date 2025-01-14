@@ -24,6 +24,7 @@ public class DaysManager {
         if (!QuotaManager.isCompleteQuota()) {
             failedQuota++;
             for (var player : Bukkit.getOnlinePlayers()) {
+                if (TeamManager.isKittie(player)) continue;
                 player.sendMessage("Quota not complete. Fine is 250$");
                 try {
                     MoneyManager.removeMoney(Math.min(MoneyManager.getMoney(player), 250), player);

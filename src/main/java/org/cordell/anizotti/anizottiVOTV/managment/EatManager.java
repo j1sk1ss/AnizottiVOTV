@@ -15,6 +15,8 @@ public class EatManager implements Listener {
     @EventHandler
     public void onPlayerEat(PlayerItemConsumeEvent event) {
         var player = event.getPlayer();
+        if (TeamManager.isKittie(player)) return;
+
         var foodType = event.getItem().getType().toString();
         var foodData = playerFoodData.computeIfAbsent(player, k -> new HashMap<>());
 

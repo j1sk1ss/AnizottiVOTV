@@ -2,6 +2,7 @@ package org.cordell.anizotti.anizottiVOTV.admin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,7 @@ import org.j1sk1ss.itemmanager.manager.Manager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Objects;
 
 
 public class CommandManager implements CommandExecutor {
@@ -28,6 +30,7 @@ public class CommandManager implements CommandExecutor {
                     TeamManager.removePlayerFromKitties(targetPlayer);
                     targetPlayer.setInvisible(false);
                     targetPlayer.setCustomNameVisible(true);
+                    Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(1);
                 }
             }
             case "to-kitties" -> {
@@ -36,6 +39,7 @@ public class CommandManager implements CommandExecutor {
                 if (!TeamManager.isKittie(targetPlayer)) TeamManager.addPlayer2Kitties(targetPlayer);
                 if (TeamManager.isPlayer(targetPlayer)) TeamManager.removePlayerFromPlayers(targetPlayer);
                 Manager.giveItems(new Item("KIT-MENU", "KIT-MENU", Material.DIAMOND), targetPlayer);
+                Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(0.5);
             }
             case "lock-door" -> Manager.giveItems(new Item("lock-door", strings[0]), player);
             case "status-spawn" -> Manager.giveItems(new Item("status-spawn", "status-spawn"), player);

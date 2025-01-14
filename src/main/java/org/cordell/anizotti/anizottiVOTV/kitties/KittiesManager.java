@@ -140,6 +140,7 @@ public class KittiesManager implements Listener {
     @EventHandler
     private void interactKittiesMenu(PlayerInteractEvent event) {
         var player = event.getPlayer();
+        if (TeamManager.isPlayer(player)) return;
         var item = player.getInventory().getItemInMainHand();
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
 
