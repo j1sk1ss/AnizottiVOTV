@@ -25,3 +25,7 @@ commands:
     usage: "/status-spawn"
   lock-door:
     usage: "/lock-door"
+  to-players:
+    usage: "/to-players"
+  to-kitties:
+    usage: "/to-kitties"

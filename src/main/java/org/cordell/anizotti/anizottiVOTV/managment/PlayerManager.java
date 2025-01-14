@@ -1,8 +1,10 @@
 package org.cordell.anizotti.anizottiVOTV.managment;
 
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.IOException;
@@ -16,6 +18,13 @@ public class PlayerManager implements Listener {
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @EventHandler
+    private void onPlayerDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player player && event.getEntity() instanceof Player) {
+            if (TeamManager.isKittie(player)) event.setCancelled(true);
         }
     }
 }

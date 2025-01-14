@@ -8,6 +8,7 @@ import org.cordell.anizotti.anizottiVOTV.common.LocationManager;
 import org.cordell.anizotti.anizottiVOTV.computer.*;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
+import org.cordell.anizotti.anizottiVOTV.kitties.KittiesManager;
 import org.cordell.anizotti.anizottiVOTV.managment.*;
 import org.cordell.com.cordelldb.manager.Manager;
 
@@ -69,16 +70,16 @@ public final class AnizottiVOTV extends JavaPlugin {
         DaysManager.day = Math.max(1, DaysManager.day);
 
         for (var listener : List.of(
-                new AdminManager(), new ComputerManager(), new EatManager(),
-                new MobManager(), new JunkManager(), new DoorManager(), new PlayerManager()
+            new AdminManager(), new ComputerManager(), new EatManager(), new KittiesManager(),
+            new MobManager(), new JunkManager(), new DoorManager(), new PlayerManager()
         ))
             Bukkit.getPluginManager().registerEvents(listener, this);
 
         var command_manager = new CommandManager();
         for (var command : Arrays.asList(
-                "give-money", "server-spawn", "generator-spawn", "shop-spawn",
-                "finder-spawn", "converter-spawn", "cargo-spawn", "money", "status-spawn",
-                "lock-door"
+            "give-money", "server-spawn", "generator-spawn", "shop-spawn",
+            "finder-spawn", "converter-spawn", "cargo-spawn", "money", "status-spawn",
+            "lock-door", "to-players", "to-kitties"
         ))
             Objects.requireNonNull(getCommand(command)).setExecutor(command_manager);
 

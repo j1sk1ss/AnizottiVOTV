@@ -9,6 +9,7 @@ import java.io.IOException;
 
 public class DaysManager {
     public static int day = 0;
+    private static int failedQuota = 0;
 
     public static void startDayTimer() {
         new BukkitRunnable() {
@@ -16,11 +17,12 @@ public class DaysManager {
             public void run() {
                 newDay();
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 20L * 60 * 2, 20L * 60 * 10);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 20L * 60 * 2, 20L * 60 * 20);
     }
 
     public static void newDay() {
         if (!QuotaManager.isCompleteQuota()) {
+            failedQuota++;
             for (var player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage("Quota not complete. Fine is 250$");
                 try {
@@ -34,5 +36,12 @@ public class DaysManager {
         day++;
         QuotaManager.stopQuota();
         QuotaManager.startQuota(day * 3);
+
+        if (day >= 12) {
+            for (var player : Bukkit.getOnlinePlayers()) {
+                if (failedQuota < 5) player.sendMessage("Players win!");
+                else player.sendMessage("Kitties win!");
+            }
+        }
     }
 }

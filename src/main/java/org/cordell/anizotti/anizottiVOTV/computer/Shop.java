@@ -9,6 +9,7 @@ import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
 import org.cordell.anizotti.anizottiVOTV.managment.CargoManager;
 import org.cordell.anizotti.anizottiVOTV.managment.MoneyManager;
 
+import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
 import org.j1sk1ss.menuframework.objects.interactive.components.LittleButton;
@@ -251,6 +252,11 @@ public class Shop extends Computer {
     @Override
     public void computerClick(Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
+        if (TeamManager.isKittie(player)) {
+            player.sendMessage("Meow meow meow meow meow meow meow meow");
+            return;
+        }
+
         if (!this.isPowered) {
             player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 1.0f, 1.0f);
             player.sendMessage("Seems shop powered off...");

@@ -1,27 +1,54 @@
-package org.cordell.anizotti.anizottiVOTV.managment;
+package org.cordell.anizotti.anizottiVOTV.kitties;
 
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.computer.ComputerManager;
 import org.cordell.anizotti.anizottiVOTV.computer.Generator;
 import org.cordell.anizotti.anizottiVOTV.computer.Server;
+import org.cordell.anizotti.anizottiVOTV.managment.DaysManager;
+import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
+import org.j1sk1ss.itemmanager.manager.Manager;
 
 import java.util.Objects;
 import java.util.Random;
 
 
-public class KittiesManager {
+public class KittiesManager implements Listener {
+    private static int availableActions = 0;
+
+    public static int getEnergy() {
+        return availableActions;
+    }
+
+    public static boolean useEnergy(int count) {
+        if (availableActions < count) return false;
+        TeamManager.informKitties("Used " + count + " points of energy");
+        availableActions -= count;
+        return true;
+    }
+
+    public static void earnEnergy(int count) {
+        availableActions += count;
+        TeamManager.informKitties("Earned energy");
+    }
+
     private static final Random random = new Random();
 
     public static void startRandomEvents() {
         new BukkitRunnable() {
             @Override
             public void run() {
+                earnEnergy(1 + DaysManager.day);
                 for (var player : Bukkit.getOnlinePlayers()) {
                     if (!isNight(player.getWorld())) continue;
+                    if (TeamManager.isKittie(player)) continue;
                     int eventChance = random.nextInt(250);
 
                     if (DaysManager.day >= 1) {
@@ -107,6 +134,19 @@ public class KittiesManager {
 
             Location soundLocation = location.clone().add(offsetX, 0, offsetZ);
             player.getWorld().playSound(soundLocation, Sound.BLOCK_GRASS_STEP, 0.5f, 1.0f);
+        }
+    }
+
+    @EventHandler
+    private void interactKittiesMenu(PlayerInteractEvent event) {
+        var player = event.getPlayer();
+        var item = player.getInventory().getItemInMainHand();
+        if (event.getHand() == EquipmentSlot.OFF_HAND) return;
+
+        if (item.getItemMeta() == null) return;
+        if (Manager.getName(item).equals("KIT-MENU")) {
+            KittiesUI.openKittiesMenu(player);
+            event.setCancelled(true);
         }
     }
 }

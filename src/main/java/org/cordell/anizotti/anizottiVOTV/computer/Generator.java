@@ -1,14 +1,18 @@
 package org.cordell.anizotti.anizottiVOTV.computer;
 
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import org.bukkit.scheduler.BukkitRunnable;
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
+import org.cordell.anizotti.anizottiVOTV.kitties.KittiesManager;
+import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
 import org.j1sk1ss.menuframework.objects.interactive.components.Button;
+import org.j1sk1ss.menuframework.objects.interactive.components.LittleButton;
 import org.j1sk1ss.menuframework.objects.interactive.components.Panel;
 import org.j1sk1ss.menuframework.objects.nonInteractive.Margin;
 
@@ -28,7 +32,7 @@ public class Generator extends Computer {
                 main.isWork = false;
                 ComputerManager.turnOffComputers();
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 15000L);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 20L * 60 * 20);
     }
 
     private static final MenuWindow serverInterface = new MenuWindow(List.of(
@@ -44,6 +48,23 @@ public class Generator extends Computer {
                     }
                 })
             ), "generator", MenuSizes.ThreeLines
+        ),
+        new Panel(
+            List.of(
+                new LittleButton(new Margin(0, 0, 0), "Turn off", "Costs 15 energy", (event, menu) -> {
+                    var player = (Player)event.getWhoClicked();
+                    if (main != null) {
+                        if (KittiesManager.useEnergy(15)) {
+                            main.isWork = false;
+                            player.closeInventory();
+                            ComputerManager.turnOffComputers();
+                        }
+                        else {
+                            player.sendMessage("You don`t have energy for this!");
+                        }
+                    }
+                }, Material.BARRIER)
+            ), "generator-kitties", MenuSizes.OneLine
         )
     ), "generatorMenu");
 
@@ -60,7 +81,11 @@ public class Generator extends Computer {
 
     @Override
     public void computerClick(Player player) {
-        if (this.isWork) return;
-        serverInterface.getPanel("generator").getView(player);
+        if (this.isWork) {
+            if (TeamManager.isKittie(player)) serverInterface.getPanel("generator-kitties").getView(player);
+        }
+        else {
+            if (TeamManager.isPlayer(player)) serverInterface.getPanel("generator").getView(player);
+        }
     }
 }

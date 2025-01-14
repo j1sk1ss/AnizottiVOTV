@@ -13,6 +13,7 @@ import org.cordell.anizotti.anizottiVOTV.computer.Computer;
 
 import org.cordell.anizotti.anizottiVOTV.managment.DaysManager;
 import org.cordell.anizotti.anizottiVOTV.managment.QuotaManager;
+import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
@@ -32,8 +33,9 @@ import static org.cordell.anizotti.anizottiVOTV.computer.signals.Signal.generate
 public class Finder extends Computer {
     public static int speed = 1;
 
-    private static int x;
-    private static int y;
+    private static int x = 0;
+    private static int y = 0;
+    public static boolean isBusy = false;
 
     private static final ArrayList<Signal> signals = new ArrayList<>();
     private static final int MAX_SIGNALS = 10;
@@ -76,8 +78,14 @@ public class Finder extends Computer {
                 }), // Left
 
                 new LittleButton(new Margin(53, 0, 0), "Scan", "Scan signal", (event, menu) -> {
+                    if (Finder.isBusy) {
+                        event.getWhoClicked().sendMessage("Scanner is busy.");
+                        return;
+                    }
+
                     var signal = scanSignal(x + 4, y + 2);
                     if (signal != null) {
+                        Finder.isBusy = true;
                         var player = (Player)event.getWhoClicked();
                         new BukkitRunnable() {
                             int progress = 0;
@@ -95,6 +103,7 @@ public class Finder extends Computer {
                                         Manager.giveItems(signalBody, player);
                                         moveTelescope(event, 0, 0);
                                         QuotaManager.completeQuota(1);
+                                        Finder.isBusy = false;
                                         cancel();
                                     }
                                 }
@@ -157,6 +166,11 @@ public class Finder extends Computer {
     @Override
     public void computerClick(Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
+        if (TeamManager.isKittie(player)) {
+            player.sendMessage("Meow meow meow meow meow meow meow meow");
+            return;
+        }
+
         if (!this.isPowered) {
             player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 1.0f, 1.0f);
             player.sendMessage("Seems finder powered off...");

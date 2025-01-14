@@ -9,6 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.Utils;
 
+import org.cordell.anizotti.anizottiVOTV.kitties.KittiesManager;
+import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
@@ -44,7 +46,7 @@ public class Server extends Computer {
                     loop = 0;
                 }
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 100L, new Random().nextInt(4) * 1500L);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 100L, new Random().nextInt(4) * 20L * 60);
     }
 
     public static boolean checkServers() {
@@ -77,6 +79,24 @@ public class Server extends Computer {
                     }
                 })
             ), "server", MenuSizes.FourLines
+        ),
+        new Panel(
+            List.of(
+                new LittleButton(new Margin(0, 0, 0), "Destroy", "Costs 5 energy", (event, menu) -> {
+                    var player = (Player)event.getWhoClicked();
+                    var server = getServer(Utils.getInventoryTitle(event).split(" ")[1]);
+                    if (server != null) {
+                        if (KittiesManager.useEnergy(5)) {
+                            server.isWork = false;
+                            player.closeInventory();
+                            if (checkServers()) ComputerManager.disconnectComputers(1);
+                        }
+                        else {
+                            player.sendMessage("You don`t have energy for this!");
+                        }
+                    }
+                }, Material.BARRIER)
+            ), "server-kitties", MenuSizes.OneLine
         )
     ), "serverMenu");
 
@@ -109,7 +129,11 @@ public class Server extends Computer {
 
     @Override
     public void computerClick(Player player) {
-        if (this.isWork) return;
-        serverInterface.getPanel("server").getView(player, "server " + name);
+        if (this.isWork) {
+            if (TeamManager.isKittie(player)) serverInterface.getPanel("server-kitties").getView(player, "server-kitties " + name);
+        }
+        else {
+            if (TeamManager.isPlayer(player)) serverInterface.getPanel("server").getView(player, "server " + name);
+        }
     }
 }

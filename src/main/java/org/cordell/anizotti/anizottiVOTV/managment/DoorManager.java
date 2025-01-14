@@ -26,7 +26,7 @@ public class DoorManager implements Listener {
         var key = player.getInventory().getItemInMainHand();
         if (block == null) return;
         if (!block.getType().equals(Material.FURNACE)) return;
-        player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1.0f, 1.0f);
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1.0f, 1.0f);
         if (Manager.getIntegerFromContainer(key, "is-key") == -1 &&
                 Manager.getIntegerFromContainer(key, "is-upgrade") == -1) return;
 
@@ -62,8 +62,8 @@ public class DoorManager implements Listener {
         var blockData = doorBlock.getBlockData();
         if (blockData instanceof org.bukkit.block.data.type.Door door) {
             door.setOpen(!door.isOpen());
-            if (door.isOpen()) player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
-            else player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
+            if (door.isOpen()) player.getWorld().playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
+            else player.getWorld().playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
             doorBlock.setBlockData(door);
         }
     }

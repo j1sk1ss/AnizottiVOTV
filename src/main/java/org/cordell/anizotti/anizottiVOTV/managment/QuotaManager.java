@@ -15,8 +15,10 @@ public class QuotaManager {
         quota = Bukkit.createBossBar("Signals target: " + target, BarColor.GREEN, BarStyle.SOLID);
         quota.setProgress(0.0);
 
-        for (var player : Bukkit.getOnlinePlayers())
+        for (var player : Bukkit.getOnlinePlayers()) {
+            if (TeamManager.isKittie(player)) continue;
             quota.addPlayer(player);
+        }
     }
 
     public static void completeQuota(int count) {
