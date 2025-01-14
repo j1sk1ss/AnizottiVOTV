@@ -69,14 +69,16 @@ public final class AnizottiVOTV extends JavaPlugin {
         DaysManager.day = Math.max(1, DaysManager.day);
 
         for (var listener : List.of(
-                new AdminManager(), new ComputerManager(), new EatManager(), new MobManager(), new JunkManager()
+                new AdminManager(), new ComputerManager(), new EatManager(),
+                new MobManager(), new JunkManager(), new DoorManager(), new PlayerManager()
         ))
             Bukkit.getPluginManager().registerEvents(listener, this);
 
         var command_manager = new CommandManager();
         for (var command : Arrays.asList(
                 "give-money", "server-spawn", "generator-spawn", "shop-spawn",
-                "finder-spawn", "converter-spawn", "cargo-spawn", "money", "status-spawn"
+                "finder-spawn", "converter-spawn", "cargo-spawn", "money", "status-spawn",
+                "lock-door"
         ))
             Objects.requireNonNull(getCommand(command)).setExecutor(command_manager);
 
@@ -92,6 +94,7 @@ public final class AnizottiVOTV extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        QuotaManager.stopQuota();
         var locationManager = new Manager("anizottiVOTV_computers.txt");
         for (var computer : ComputerManager.computers) {
             try {

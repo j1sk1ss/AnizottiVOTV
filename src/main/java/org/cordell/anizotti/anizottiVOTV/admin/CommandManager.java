@@ -17,42 +17,28 @@ public class CommandManager implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         var player = (Player) commandSender;
         switch (command.getName()) {
-            case "status-spawn":
-                Manager.giveItems(new Item("status-spawn", "status-spawn"), player);
-                break;
-            case "server-spawn":
-                Manager.giveItems(new Item("server-spawn", strings[0]), player);
-                break;
-            case "generator-spawn":
-                Manager.giveItems(new Item("generator-spawn", "generator-spawn"), player);
-                break;
-            case "shop-spawn":
-                Manager.giveItems(new Item("shop-spawn", "shop-spawn"), player);
-                break;
-            case "finder-spawn":
-                Manager.giveItems(new Item("finder-spawn", "finder-spawn"), player);
-                break;
-            case "converter-spawn":
-                Manager.giveItems(new Item("converter-spawn", "converter-spawn"), player);
-                break;
-            case "cargo-spawn":
-                Manager.giveItems(new Item("cargo-spawn", "cargo-spawn"), player);
-                break;
-            case "give-money":
+            case "lock-door" -> Manager.giveItems(new Item("lock-door", strings[0]), player);
+            case "status-spawn" -> Manager.giveItems(new Item("status-spawn", "status-spawn"), player);
+            case "server-spawn" -> Manager.giveItems(new Item("server-spawn", strings[0]), player);
+            case "generator-spawn" -> Manager.giveItems(new Item("generator-spawn", "generator-spawn"), player);
+            case "shop-spawn" -> Manager.giveItems(new Item("shop-spawn", "shop-spawn"), player);
+            case "finder-spawn" -> Manager.giveItems(new Item("finder-spawn", "finder-spawn"), player);
+            case "converter-spawn" -> Manager.giveItems(new Item("converter-spawn", "converter-spawn"), player);
+            case "cargo-spawn" -> Manager.giveItems(new Item("cargo-spawn", "cargo-spawn"), player);
+            case "give-money" -> {
                 try {
                     MoneyManager.addMoney(1000, player);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
-                break;
-            case "money":
+            }
+            case "money" -> {
                 try {
                     player.sendMessage("Balance: " + MoneyManager.getMoney(player) + "$");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                break;
+            }
         }
 
         return true;

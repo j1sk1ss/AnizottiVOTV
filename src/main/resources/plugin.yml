@@ -23,3 +23,5 @@ commands:
     usage: "/money"
   status-spawn:
     usage: "/status-spawn"
+  lock-door:
+    usage: "/lock-door"

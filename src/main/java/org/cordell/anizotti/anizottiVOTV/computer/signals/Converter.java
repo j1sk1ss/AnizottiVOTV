@@ -1,11 +1,13 @@
 package org.cordell.anizotti.anizottiVOTV.computer.signals;
 
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.computer.Computer;
 
+import org.cordell.anizotti.anizottiVOTV.managment.QuotaManager;
 import org.j1sk1ss.itemmanager.manager.Manager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
@@ -40,6 +42,7 @@ public class Converter extends Computer {
                                     if (progress == delay) {
                                         Manager.setLore(signal, Signal.xorEncryptDecrypt(String.join("", Manager.getLoreLines(signal))));
                                         Manager.setInteger2Container(signal, 1, "is_decrypted");
+                                        QuotaManager.completeQuota(2);
                                         cancel();
                                     }
                                 }
@@ -64,7 +67,9 @@ public class Converter extends Computer {
 
     @Override
     public void computerClick(Player player) {
+        player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
         if (!this.isPowered) {
+            player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 1.0f, 1.0f);
             player.sendMessage("Seems converter powered off...");
             return;
         }

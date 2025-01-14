@@ -2,9 +2,8 @@ package org.cordell.anizotti.anizottiVOTV.managment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.block.TileState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
@@ -14,11 +13,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.Utils;
+import org.cordell.anizotti.anizottiVOTV.common.BlockManager;
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
 
@@ -51,7 +50,7 @@ public class CargoManager implements Listener {
         var cargoBlock = targetBlock.getRelative(0, 1, 0);
         if (cargoBlock.getType() != Material.BEEHIVE) return -1;
 
-        var isStorage = getDataFromBlock(cargoBlock, "storage");
+        var isStorage = BlockManager.getDataFromBlock(cargoBlock, "storage");
         if (isStorage != null) return -1;
 
         int deliveryTime = new Random().nextInt(25) + 1;
@@ -85,15 +84,15 @@ public class CargoManager implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
 
-        var isCargo = getDataFromBlock(block, "is_cargo");
+        var isCargo = BlockManager.getDataFromBlock(block, "is_cargo");
         if (isCargo != null) {
             if (isCargo.equals("true")) {
                 var isAdd = false;
                 var item = player.getInventory().getItemInMainHand();
                 for (int i = 0; i < 6; i++) {
-                    var result = getDataFromBlock(block, "storage_" + i);
+                    var result = BlockManager.getDataFromBlock(block, "storage_" + i);
                     if (result != null) continue;
-                    addDataToBlock(block, "storage_" + i, Utils.serializeItemStack(item));
+                    BlockManager.addDataToBlock(block, "storage_" + i, Utils.serializeItemStack(item));
                     player.getInventory().setItemInMainHand(null);
                     isAdd = true;
                     break;
@@ -113,14 +112,15 @@ public class CargoManager implements Listener {
                 player.getInventory().setItemInMainHand(null);
                 var blockAbove = block.getRelative(0, 1, 0);
                 blockAbove.setType(Material.BEEHIVE);
-                addDataToBlock(blockAbove, "is_cargo", "true");
+                BlockManager.addDataToBlock(blockAbove, "is_cargo", "true");
                 return;
             }
         }
 
-        var cargoName = getDataFromBlock(block, "storage");
+        var cargoName = BlockManager.getDataFromBlock(block, "storage");
         if (cargoName == null) return;
 
+        player.playSound(player.getLocation(), Sound.ENTITY_ARMOR_STAND_BREAK, 1.0f, 1.0f);
         switch (cargoName) {
             case "flash-light" -> {
                 var flashLight = new Item("flashLight", "", Material.STICK);
@@ -149,9 +149,14 @@ public class CargoManager implements Listener {
             case "sword" -> Manager.giveItems(new ItemStack(Material.IRON_SWORD), player);
             case "cargo" -> Manager.giveItems(new ItemStack(Material.BEEHIVE), player);
             case "shovel" -> player.performCommand("give @p minecraft:wooden_shovel[can_break={predicates:[{blocks:\"suspicious_sand\"},{blocks:\"suspicious_gravel\"}]}] 1");
-            case "key" -> player.performCommand("give @p minecraft:oak_button[minecraft:can_place_on={predicates:[{blocks:granite}]}] 1");
-            case "secret-key" -> player.performCommand("give @p minecraft:oak_button[minecraft:can_place_on={predicates:[{blocks:polished_granite}]}] 1");
+            case "key" -> DoorManager.giveKey(player, 1);
+            case "secret-key" -> DoorManager.giveKey(player, 2);
             case "music-box" -> player.performCommand("give @p minecraft:jukebox[minecraft:can_place_on={predicates:[{blocks:smooth_stone}]}] 1");
+            case "lock-upgrade" -> {
+                var upgrade = new Item("Lock upgrade", "Click to locker for increase access level");
+                Manager.setInteger2Container(upgrade, 1, "is-upgrade");
+                Manager.giveItems(upgrade, player);
+            }
         }
 
         block.setType(Material.AIR);
@@ -162,7 +167,7 @@ public class CargoManager implements Listener {
     private static int parseCargo(Block block) {
         int price = 0;
         for (int i = 0; i < 6; i++) {
-            var data = getDataFromBlock(block, "storage_" + i);
+            var data = BlockManager.getDataFromBlock(block, "storage_" + i);
             if (data != null) {
                 var item = Utils.deserializeItemStack(data);
                 if (item != null) {
@@ -202,32 +207,11 @@ public class CargoManager implements Listener {
                     var landedBlock = landedLocation.getBlock();
 
                     landedBlock.setType(Material.BEEHIVE);
-                    addDataToBlock(landedBlock, "storage", item);
+                    BlockManager.addDataToBlock(landedBlock, "storage", item);
                     cancel();
                 }
             }
         }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 1);
-    }
-
-    private static void addDataToBlock(Block block, String keyName, String value) {
-        var state = block.getState();
-        if (state instanceof TileState tileState) {
-            var key = new NamespacedKey(AnizottiVOTV.getPlugin(AnizottiVOTV.class), keyName);
-            var pdc = tileState.getPersistentDataContainer();
-            pdc.set(key, PersistentDataType.STRING, value);
-            tileState.update();
-        }
-    }
-
-    private static String getDataFromBlock(Block block, String keyName) {
-        var state = block.getState();
-        if (state instanceof TileState tileState) {
-            var key = new NamespacedKey(AnizottiVOTV.getPlugin(AnizottiVOTV.class), keyName);
-            var pdc = tileState.getPersistentDataContainer();
-            return pdc.get(key, PersistentDataType.STRING);
-        }
-
-        return null;
     }
 
     // Non-static logic

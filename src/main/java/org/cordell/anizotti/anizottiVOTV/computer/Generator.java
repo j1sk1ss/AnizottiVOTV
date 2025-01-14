@@ -1,5 +1,6 @@
 package org.cordell.anizotti.anizottiVOTV.computer;
 
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -36,8 +37,10 @@ public class Generator extends Computer {
                 new Button(new Margin(0, 2, 8), "TURN ON", "", (event, menu) -> {
                     if (main != null) {
                         main.isWork = true;
-                        event.getWhoClicked().closeInventory();
+                        var player = (Player)event.getWhoClicked();
+                        player.closeInventory();
                         ComputerManager.turnOnComputers();
+                        player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
                     }
                 })
             ), "generator", MenuSizes.ThreeLines

@@ -12,6 +12,7 @@ import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
 import org.cordell.anizotti.anizottiVOTV.managment.CargoManager;
 
+import org.cordell.anizotti.anizottiVOTV.managment.DoorManager;
 import org.j1sk1ss.itemmanager.manager.Manager;
 
 
@@ -56,6 +57,11 @@ public class AdminManager implements Listener {
             case "status-spawn":
                 ComputerManager.computers.add(new StatusScanner(block));
                 System.out.println("Status spawned!");
+                break;
+            case "lock-door":
+                var level = Integer.parseInt(String.join("", Manager.getLoreLines(item)));
+                DoorManager.setDoor(block, level);
+                System.out.println("Door locked to " + level + " level");
                 break;
             default:
                 return;

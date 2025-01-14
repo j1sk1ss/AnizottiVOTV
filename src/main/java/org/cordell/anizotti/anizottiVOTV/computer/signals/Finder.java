@@ -1,6 +1,7 @@
 package org.cordell.anizotti.anizottiVOTV.computer.signals;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,6 +12,7 @@ import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.computer.Computer;
 
 import org.cordell.anizotti.anizottiVOTV.managment.DaysManager;
+import org.cordell.anizotti.anizottiVOTV.managment.QuotaManager;
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
@@ -92,6 +94,7 @@ public class Finder extends Computer {
                                         Manager.setInteger2Container(signalBody, signal.getType(), "signal_type");
                                         Manager.giveItems(signalBody, player);
                                         moveTelescope(event, 0, 0);
+                                        QuotaManager.completeQuota(1);
                                         cancel();
                                     }
                                 }
@@ -153,11 +156,18 @@ public class Finder extends Computer {
 
     @Override
     public void computerClick(Player player) {
+        player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
         if (!this.isPowered) {
+            player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 1.0f, 1.0f);
             player.sendMessage("Seems finder powered off...");
             return;
         }
 
         finderInterface.getPanel("finder").getView(player);
+        var message = new StringBuilder();
+        for (var sig : Finder.signals)
+            message.append("Found signal: ").append(sig.getX()).append(" ").append(sig.getY()).append(" | Type: ").append(sig.getType()).append("\n");
+
+        player.sendMessage(message.toString());
     }
 }

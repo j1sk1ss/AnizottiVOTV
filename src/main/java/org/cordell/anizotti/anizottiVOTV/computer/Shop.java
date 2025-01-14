@@ -1,6 +1,7 @@
 package org.cordell.anizotti.anizottiVOTV.computer;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;
@@ -31,6 +32,7 @@ public class Shop extends Computer {
     private static final double keyPrice = 500d;
     private static final double secretPrice = 2500d;
     private static final double musicBoxPrice = 499d;
+    private static final double doorLockUpgrade = 2000d;
 
     private static final MenuWindow shopUpgradeInterface = new MenuWindow(List.of(
         new Panel(List.of(
@@ -143,7 +145,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }, Material.SPRUCE_BUTTON),
+            }, Material.TRIAL_KEY),
             new LittleButton(new Margin(11, 0, 0), "Buy key 2", secretPrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -153,7 +155,7 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }, Material.SPRUCE_BUTTON),
+            }, Material.TRIAL_KEY),
             new LittleButton(new Margin(12, 0, 0), "Buy music box", musicBoxPrice + "$", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
@@ -163,7 +165,17 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }, Material.SPRUCE_BUTTON),
+            }, Material.JUKEBOX),
+            new LittleButton(new Margin(13, 0, 0), "Buy door-lock upgrade", doorLockUpgrade + "$", (event, menu) -> {
+                var player = (Player)event.getWhoClicked();
+                try {
+                    if (MoneyManager.removeMoney(doorLockUpgrade, player)) {
+                        player.sendMessage("Delivery time is: " + CargoManager.sendCargo("lock-upgrade") + "s");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }, Material.OMINOUS_TRIAL_KEY),
             new LittleButton(new Margin(17, 0, 0), "Upgrades", "", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 menu.getPanel("upgrade").getView(player);
@@ -238,7 +250,9 @@ public class Shop extends Computer {
 
     @Override
     public void computerClick(Player player) {
+        player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
         if (!this.isPowered) {
+            player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 1.0f, 1.0f);
             player.sendMessage("Seems shop powered off...");
             return;
         }

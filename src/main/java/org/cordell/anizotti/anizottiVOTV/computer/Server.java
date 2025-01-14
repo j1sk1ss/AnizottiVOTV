@@ -44,7 +44,7 @@ public class Server extends Computer {
                     loop = 0;
                 }
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, new Random().nextInt(4) * 400L);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 100L, new Random().nextInt(4) * 1500L);
     }
 
     public static boolean checkServers() {
