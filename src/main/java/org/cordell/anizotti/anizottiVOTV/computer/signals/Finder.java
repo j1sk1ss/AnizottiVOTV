@@ -16,6 +16,7 @@ import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
 
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
+
 import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
 import org.j1sk1ss.menuframework.objects.interactive.components.ClickArea;
@@ -45,7 +46,9 @@ public class Finder extends Computer {
             @Override
             public void run() {
                 if (signals.size() >= MAX_SIGNALS) return;
-                signals.add(generateSignal(50, 50, Signals.signals.get(DaysManager.day).get(new Random().nextInt(Signals.signals.get(DaysManager.day).size()))));
+                var curSignals = Signals.signals.get(DaysManager.day);
+                if (curSignals == null) curSignals = Signals.defaultSignals;
+                signals.add(generateSignal(50, 50, curSignals.get(new Random().nextInt(Signals.signals.get(DaysManager.day).size()))));
             }
         }.runTaskTimerAsynchronously(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 60 * 20L);
     }

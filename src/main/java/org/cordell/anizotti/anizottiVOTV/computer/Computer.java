@@ -3,6 +3,7 @@ package org.cordell.anizotti.anizottiVOTV.computer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+
 public abstract class Computer {
     public String name;
     public String model;

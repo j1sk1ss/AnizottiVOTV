@@ -1,6 +1,9 @@
 package org.cordell.anizotti.anizottiVOTV.kitties;
 
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,6 +26,7 @@ import java.util.Random;
 
 
 public class KittiesManager implements Listener {
+    private static BossBar energy;
     private static int availableActions = 0;
 
     public static int getEnergy() {
@@ -33,11 +37,25 @@ public class KittiesManager implements Listener {
         if (availableActions < count) return false;
         TeamManager.informKitties("Used " + count + " points of energy");
         availableActions -= count;
+        if (energy != null) energy.setProgress(availableActions / 100d);
         return true;
     }
 
     public static void earnEnergy(int count) {
+        if (availableActions + count > 100) return;
+        if (energy == null) {
+            energy = Bukkit.createBossBar("Energy", BarColor.GREEN, BarStyle.SOLID);
+            energy.setProgress(0.0);
+        }
+
+        energy.removeAll();
+        for (var player : Bukkit.getOnlinePlayers()) {
+            if (TeamManager.isPlayer(player)) continue;
+            energy.addPlayer(player);
+        }
+
         availableActions += count;
+        energy.setProgress(availableActions / 100d);
         TeamManager.informKitties("Earned energy");
     }
 
@@ -47,7 +65,7 @@ public class KittiesManager implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                earnEnergy(1 + DaysManager.day);
+                earnEnergy(10 + DaysManager.day);
                 for (var player : Bukkit.getOnlinePlayers()) {
                     if (!isNight(player.getWorld())) continue;
                     if (TeamManager.isKittie(player)) continue;
@@ -59,7 +77,7 @@ public class KittiesManager implements Listener {
                         else playWalkingSoundsAroundPlayer(player);
                     }
 
-                    if (DaysManager.day >= 3) {
+                    if (DaysManager.day >= 6) {
                         if (eventChance < 100) {
                             Generator.main.isWork = false;
                             ComputerManager.turnOffComputers();
@@ -73,7 +91,7 @@ public class KittiesManager implements Listener {
                         }
                     }
 
-                    if (DaysManager.day >= 6) {
+                    if (DaysManager.day >= 10) {
                         if (eventChance < 249) {
                             for (int i = 0; i < 4; i++) {
                                 var server = Server.servers.get(random.nextInt(Server.servers.size()));

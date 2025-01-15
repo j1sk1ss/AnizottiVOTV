@@ -10,8 +10,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.managment.DoorManager;
+
 import org.j1sk1ss.itemmanager.manager.Manager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
@@ -107,7 +109,7 @@ public class KittiesUI implements Listener {
                     player.sendMessage("You don't have enough energy!");
                 }
             }, Material.COOKED_SALMON)
-        ), "kitties-ui", MenuSizes.ThreeLines)
+        ), "kitties-ui", MenuSizes.OneLine)
     ));
 
     public static void openKittiesMenu(Player player) {

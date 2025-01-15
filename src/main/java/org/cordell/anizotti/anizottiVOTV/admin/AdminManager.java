@@ -4,8 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-
 import org.bukkit.inventory.EquipmentSlot;
+
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.computer.*;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;

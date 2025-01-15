@@ -4,12 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Converter;
 import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
 import org.cordell.anizotti.anizottiVOTV.managment.CargoManager;
 import org.cordell.anizotti.anizottiVOTV.managment.MoneyManager;
-
 import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
+
 import org.j1sk1ss.menuframework.objects.MenuSizes;
 import org.j1sk1ss.menuframework.objects.MenuWindow;
 import org.j1sk1ss.menuframework.objects.interactive.components.LittleButton;

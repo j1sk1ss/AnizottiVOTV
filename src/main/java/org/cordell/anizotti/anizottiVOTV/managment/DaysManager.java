@@ -32,10 +32,8 @@ public class DaysManager {
         QuotaManager.startQuota(day * 3);
 
         if (day >= 12) {
-            for (var player : Bukkit.getOnlinePlayers()) {
-                if (failedQuota < 5) player.sendMessage("Players win!");
-                else player.sendMessage("Kitties win!");
-            }
+            if (failedQuota < 5) TeamManager.informPlayers("Players win!");
+            else TeamManager.informKitties("Kitties win!");
         }
     }
 }

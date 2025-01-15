@@ -3,6 +3,7 @@ package org.cordell.anizotti.anizottiVOTV.computer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+
 public class StatusScanner extends Computer {
     public StatusScanner(Block block) {
         this.baseBlock = block;
