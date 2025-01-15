@@ -31,6 +31,7 @@ public class Generator extends Computer {
                 System.out.println("Generator crush");
                 main.isWork = false;
                 ComputerManager.turnOffComputers();
+                main.baseBlock.getWorld().playSound(main.baseBlock.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
             }
         }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 20L * 60 * 20);
     }
@@ -44,10 +45,11 @@ public class Generator extends Computer {
                         var player = (Player)event.getWhoClicked();
                         player.closeInventory();
                         ComputerManager.turnOnComputers();
-                        player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
+                        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
+                        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
                     }
-                })
-            ), "generator", MenuSizes.ThreeLines
+                }, Material.GOLD_INGOT)
+            ), "generator", MenuSizes.ThreeLines, "\u10F1"
         ),
         new Panel(
             List.of(

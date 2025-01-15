@@ -17,7 +17,7 @@ public class DaysManager {
             public void run() {
                 newDay();
             }
-        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 20L * 60 * 2, 20L * 60 * 20);
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 20L * 60 * 5, 20L * 60 * 20);
     }
 
     public static void newDay() {

@@ -1,5 +1,6 @@
 package org.cordell.anizotti.anizottiVOTV.computer.signals;
 
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class Converter extends Computer {
     private static final MenuWindow converterInterface = new MenuWindow(List.of(
         new Panel(
             List.of(
-                new Button(new Margin(0, 2, 2), "Decrypt", "Decrypt signal from hand", (event, menu) -> {
+                new Button(new Margin(0, 2, 3), "Decrypt", "Decrypt signal from hand", (event, menu) -> {
                     if (Converter.isBusy) {
                         event.getWhoClicked().sendMessage("Converter is busy.");
                         return;
@@ -60,8 +61,8 @@ public class Converter extends Computer {
                     else {
                         player.sendMessage("Take signal to hand");
                     }
-                })
-            ), "converter", MenuSizes.ThreeLines
+                }, Material.GOLD_INGOT)
+            ), "converter", MenuSizes.ThreeLines, "\u10F0"
         )
     ), "converterMenu");
 

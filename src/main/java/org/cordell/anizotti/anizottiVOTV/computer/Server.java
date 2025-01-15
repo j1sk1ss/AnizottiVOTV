@@ -1,6 +1,7 @@
 package org.cordell.anizotti.anizottiVOTV.computer;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -35,23 +36,21 @@ public class Server extends Computer {
             int loop = 0;
             @Override
             public void run() {
-                if (loop++ >= durability) {
+                if (loop >= durability) {
                     if (servers.isEmpty()) return;
                     int serverIndex = new Random().nextInt(servers.size());
                     if (!servers.get(serverIndex).isWork) return;
 
-                    System.out.println("Server " + servers.get(serverIndex).name + " crush");
+                    System.out.println("Server " + servers.get(serverIndex).name + " crush | Durability: " + durability + " loop: " + loop);
+                    servers.get(serverIndex).baseBlock.getWorld().playSound(servers.get(serverIndex).baseBlock.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5f, 1.0f);
                     servers.get(serverIndex).isWork = false;
                     ComputerManager.disconnectComputers(1);
-                    loop = 0;
                 }
+
+                loop++;
+                if (loop >= durability) loop = 0;
             }
         }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 100L, new Random().nextInt(4) * 20L * 60);
-    }
-
-    public static boolean checkServers() {
-        for (Server server : servers) if (!server.isWork) return false;
-        return true;
     }
 
     private static final MenuWindow serverInterface = new MenuWindow(List.of(
@@ -59,15 +58,18 @@ public class Server extends Computer {
             List.of(
                 new ClickArea(new Margin(0, 2, 8), (event, menu) -> {
                     var item = event.getInventory().getItem(event.getSlot());
+                    var player = (Player)event.getWhoClicked();
                     if (item == null) return;
 
                     event.getInventory().setItem(event.getSlot(), new Item("FIXED", "", Material.GREEN_CONCRETE));
+                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 0.5f, 1.0f);
                     if (checkServerWindow(event.getInventory())) {
                         var server = getServer(Utils.getInventoryTitle(event).split(" ")[1]);
                         if (server != null) {
                             server.isWork = true;
-                            event.getWhoClicked().closeInventory();
-                            if (checkServers()) ComputerManager.connectComputers(1);
+                            player.closeInventory();
+                            ComputerManager.connectComputers(1);
+                            player.getWorld().playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 0.5f, 1.0f);
                         }
                     }
                 }, "server_area", ""),
@@ -77,8 +79,8 @@ public class Server extends Computer {
                             event.getInventory().setItem(i, new Item("BAD SECTOR", "", Material.RED_SAND));
                         }
                     }
-                })
-            ), "server", MenuSizes.FourLines
+                }, Material.GOLD_INGOT)
+            ), "server", MenuSizes.FourLines, "\u10F3"
         ),
         new Panel(
             List.of(
@@ -88,8 +90,9 @@ public class Server extends Computer {
                     if (server != null) {
                         if (KittiesManager.useEnergy(5)) {
                             server.isWork = false;
+                            server.baseBlock.getWorld().playSound(server.baseBlock.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5f, 1.0f);
                             player.closeInventory();
-                            if (checkServers()) ComputerManager.disconnectComputers(1);
+                            ComputerManager.disconnectComputers(1);
                         }
                         else {
                             player.sendMessage("You don`t have energy for this!");

@@ -195,7 +195,6 @@ public class CargoManager implements Listener {
 
     private static void spawnFallingBlock(Location location, String item) {
         var fallingBlock = Objects.requireNonNull(location.getWorld()).spawnFallingBlock(location.add(0, 40, 0), Material.BEEHIVE.createBlockData());
-
         fallingBlock.setDropItem(false);
         fallingBlock.setHurtEntities(false);
 
@@ -208,6 +207,7 @@ public class CargoManager implements Listener {
 
                     landedBlock.setType(Material.BEEHIVE);
                     BlockManager.addDataToBlock(landedBlock, "storage", item);
+                    landedBlock.getWorld().playSound(landedBlock.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
                     cancel();
                 }
             }

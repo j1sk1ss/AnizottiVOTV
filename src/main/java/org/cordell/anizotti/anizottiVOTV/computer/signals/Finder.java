@@ -55,27 +55,25 @@ public class Finder extends Computer {
             List.of(
                 new ClickArea(new Margin(0, 4, 8), null, "space", ""), // Signals
 
-                //new Bar(new Margin(45, 1, 5), Direction.Right, List.of("10%", "25%", "35%", "60%", "80%", "100%")), // Progress bar
-
                 new LittleButton(new Margin(51, 0, 0), "Down", "Set down", (event, menu) -> {
                     event.getWhoClicked().sendMessage(x + ":" + y);
                     moveTelescope(event, 0, 1);
-                }), // Down
+                }, Material.GOLD_INGOT), // Down
 
                 new LittleButton(new Margin(52, 0, 0), "Right", "Set right", (event, menu) -> {
                     event.getWhoClicked().sendMessage(x + ":" + y);
                     moveTelescope(event, 1, 0);
-                }), // Right
+                }, Material.GOLD_INGOT), // Right
 
                 new LittleButton(new Margin(42, 0, 0), "Up", "Set up", (event, menu) -> {
                     event.getWhoClicked().sendMessage(x + ":" + y);
                     moveTelescope(event, 0, -1);
-                }), // Up
+                }, Material.GOLD_INGOT), // Up
 
                 new LittleButton(new Margin(50, 0, 0), "Left", "Set left", (event, menu) -> {
                     event.getWhoClicked().sendMessage(x + ":" + y);
                     moveTelescope(event, -1, 0);
-                }), // Left
+                }, Material.GOLD_INGOT), // Left
 
                 new LittleButton(new Margin(53, 0, 0), "Scan", "Scan signal", (event, menu) -> {
                     if (Finder.isBusy) {
@@ -114,8 +112,8 @@ public class Finder extends Computer {
                             (signal.getType() / Math.min(speed, 1)) * (20L * (6 / Math.min(Finder.connectLevel, 1)))
                         );
                     }
-                }) // Scan signal
-            ), "finder", MenuSizes.SixLines
+                }, Material.GOLD_INGOT) // Scan signal
+            ), "finder", MenuSizes.SixLines, "\u10F2"
         )
     ), "finderMenu");
 
