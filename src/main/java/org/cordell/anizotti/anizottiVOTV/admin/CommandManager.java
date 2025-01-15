@@ -30,7 +30,7 @@ public class CommandManager implements CommandExecutor {
                     TeamManager.removePlayerFromKitties(targetPlayer);
                     targetPlayer.setInvisible(false);
                     targetPlayer.setCustomNameVisible(true);
-                    Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(1);
+                    Objects.requireNonNull(targetPlayer.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(1);
                 }
             }
             case "to-kitties" -> {
@@ -39,7 +39,7 @@ public class CommandManager implements CommandExecutor {
                 if (!TeamManager.isKittie(targetPlayer)) TeamManager.addPlayer2Kitties(targetPlayer);
                 if (TeamManager.isPlayer(targetPlayer)) TeamManager.removePlayerFromPlayers(targetPlayer);
                 Manager.giveItems(new Item("KIT-MENU", "KIT-MENU", Material.DIAMOND), targetPlayer);
-                Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(0.5);
+                Objects.requireNonNull(targetPlayer.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(0.5);
             }
             case "lock-door" -> Manager.giveItems(new Item("lock-door", strings[0]), player);
             case "status-spawn" -> Manager.giveItems(new Item("status-spawn", "status-spawn"), player);

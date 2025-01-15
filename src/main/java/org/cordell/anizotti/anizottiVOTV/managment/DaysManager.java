@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 
-import java.io.IOException;
-
 
 public class DaysManager {
     public static int day = 0;
@@ -25,12 +23,7 @@ public class DaysManager {
             failedQuota++;
             for (var player : Bukkit.getOnlinePlayers()) {
                 if (TeamManager.isKittie(player)) continue;
-                player.sendMessage("Quota not complete. Fine is 250$");
-                try {
-                    MoneyManager.removeMoney(Math.min(MoneyManager.getMoney(player), 250), player);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                player.sendMessage("Quota not complete.");
             }
         }
 

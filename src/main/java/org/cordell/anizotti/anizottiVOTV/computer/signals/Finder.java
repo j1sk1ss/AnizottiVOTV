@@ -6,14 +6,14 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-
 import org.bukkit.scheduler.BukkitRunnable;
+
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.computer.Computer;
-
 import org.cordell.anizotti.anizottiVOTV.managment.DaysManager;
 import org.cordell.anizotti.anizottiVOTV.managment.QuotaManager;
 import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
+
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
 import org.j1sk1ss.menuframework.objects.MenuSizes;
@@ -87,7 +87,7 @@ public class Finder extends Computer {
                         var player = (Player)event.getWhoClicked();
                         new BukkitRunnable() {
                             int progress = 0;
-                            final int delay = signal.getType() * 12;
+                            final int delay = signal.getType() * 5;
 
                             @Override
                             public void run() {

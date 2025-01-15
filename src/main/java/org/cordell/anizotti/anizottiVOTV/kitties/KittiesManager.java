@@ -8,12 +8,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
+
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.computer.ComputerManager;
 import org.cordell.anizotti.anizottiVOTV.computer.Generator;
 import org.cordell.anizotti.anizottiVOTV.computer.Server;
 import org.cordell.anizotti.anizottiVOTV.managment.DaysManager;
 import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
+
 import org.j1sk1ss.itemmanager.manager.Manager;
 
 import java.util.Objects;
@@ -53,7 +55,7 @@ public class KittiesManager implements Listener {
 
                     if (DaysManager.day >= 1) {
                         if (eventChance < 66) spawnArmorStandBehindPlayer(player);
-                        else if (eventChance < 133) hitPlayerWithCatSound(player);
+                        else if (eventChance < 163) hitPlayerWithCatSound(player);
                         else playWalkingSoundsAroundPlayer(player);
                     }
 
@@ -129,9 +131,8 @@ public class KittiesManager implements Listener {
     private static void playWalkingSoundsAroundPlayer(Player player) {
         Location location = player.getLocation();
         for (int i = 0; i < 5; i++) {
-            double offsetX = (random.nextDouble() * 2 - 1) * 3;
-            double offsetZ = (random.nextDouble() * 2 - 1) * 3;
-
+            var offsetX = (random.nextDouble() * 2 - 1) * 3;
+            var offsetZ = (random.nextDouble() * 2 - 1) * 3;
             Location soundLocation = location.clone().add(offsetX, 0, offsetZ);
             player.getWorld().playSound(soundLocation, Sound.BLOCK_GRASS_STEP, 0.5f, 1.0f);
         }

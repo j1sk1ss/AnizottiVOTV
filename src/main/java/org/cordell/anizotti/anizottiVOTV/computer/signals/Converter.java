@@ -40,7 +40,7 @@ public class Converter extends Computer {
                         var signalType = Manager.getIntegerFromContainer(signal, "signal_type");
                         new BukkitRunnable() {
                             int progress = 0;
-                            final int delay = signalType * 12;
+                            final int delay = signalType * 5;
 
                             @Override
                             public void run() {
