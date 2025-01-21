@@ -28,35 +28,33 @@ public class Converter extends Computer {
         new Panel(
             List.of(
                 new Button(new Margin(0, 2, 3), "Decrypt", "Decrypt signal from hand", (event, menu) -> {
+                    var player = (Player)event.getWhoClicked();
                     if (Converter.isBusy) {
+                        player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1.0f, 1.0f);
                         event.getWhoClicked().sendMessage("Converter is busy.");
                         return;
                     }
 
-                    var player = (Player)event.getWhoClicked();
                     var signal = player.getInventory().getItemInMainHand();
                     if (Manager.getIntegerFromContainer(signal, "is_signal") != -1) {
                         Converter.isBusy = true;
                         var signalType = Manager.getIntegerFromContainer(signal, "signal_type");
                         new BukkitRunnable() {
                             int progress = 0;
-                            final int delay = signalType * 5;
+                            final int delay = (signalType + 1) * 15;
 
                             @Override
                             public void run() {
-                                if (progress < delay) {
-                                    progress++;
-                                    player.sendMessage("Progress: " + progress * (100 / delay) + "%");
-                                    if (progress == delay) {
-                                        Manager.setLore(signal, Signal.xorEncryptDecrypt(String.join("", Manager.getLoreLines(signal))));
-                                        Manager.setInteger2Container(signal, 1, "is_decrypted");
-                                        QuotaManager.completeQuota(2);
-                                        Converter.isBusy = false;
-                                        cancel();
-                                    }
-                                }
+                                player.sendMessage("Decode progress: " + Math.round(((double) progress / delay) * 100) + "%");
+                                if (++progress < delay) return;
+
+                                Manager.setLore(signal, Signal.xorEncryptDecrypt(String.join("", Manager.getLoreLines(signal))));
+                                Manager.setInteger2Container(signal, 1, "is_decrypted");
+                                QuotaManager.completeQuota(2);
+                                Converter.isBusy = false;
+                                this.cancel();
                             }
-                        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, (signalType / speed) * 20L);
+                        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, ((signalType + 1) / speed) * 20L);
                     }
                     else {
                         player.sendMessage("Take signal to hand");

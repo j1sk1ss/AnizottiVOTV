@@ -49,7 +49,7 @@ public final class AnizottiVOTV extends JavaPlugin {
         }
         locationManager.stop();
 
-        var upgradesManager = new Manager("anizottiVOTV_upgrades.txt");
+        var upgradesManager = new Manager("anizottiVOTV_other.txt");
         Server.durability = upgradesManager.getInt("server-upgrade");
         Finder.speed = upgradesManager.getInt("scanner-upgrade");
         Converter.speed = upgradesManager.getInt("converter-upgrade");
@@ -59,6 +59,11 @@ public final class AnizottiVOTV extends JavaPlugin {
             if (cargoLocation != null) {
                 Bukkit.getPluginManager().registerEvents(new CargoManager(Bukkit.getWorlds().getFirst().getBlockAt(cargoLocation)), AnizottiVOTV.getPlugin(AnizottiVOTV.class));
             }
+
+            var pSpawnLocation = LocationManager.stringToLocation(upgradesManager.getString("p-spawn"));
+            var kSpawnLocation = LocationManager.stringToLocation(upgradesManager.getString("k-spawn"));
+            if (pSpawnLocation != null) SpawnManager.playerSpawn = Bukkit.getWorlds().getFirst().getBlockAt(pSpawnLocation);
+            if (kSpawnLocation != null) SpawnManager.kittiesSpawn = Bukkit.getWorlds().getFirst().getBlockAt(kSpawnLocation);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -79,19 +84,9 @@ public final class AnizottiVOTV extends JavaPlugin {
         for (var command : Arrays.asList(
             "give-money", "server-spawn", "generator-spawn", "shop-spawn",
             "finder-spawn", "converter-spawn", "cargo-spawn", "money", "status-spawn",
-            "lock-door", "to-players", "to-kitties"
+            "lock-door", "to-players", "to-kitties", "fix-all", "player-spawn", "start-event"
         ))
             Objects.requireNonNull(getCommand(command)).setExecutor(command_manager);
-
-        Server.serverCrush();
-        Generator.generatorCrush();
-        DaysManager.startDayTimer();
-        KittiesManager.startRandomEvents();
-        KittiesManager.startEnergyGrow();
-        FlashLightManager.startLightingTask();
-
-        ComputerManager.turnOnComputers();
-        ComputerManager.connectComputers(Server.servers.size());
     }
 
     @Override
@@ -109,12 +104,14 @@ public final class AnizottiVOTV extends JavaPlugin {
         }
         locationManager.stop();
 
-        var upgradesManager = new Manager("anizottiVOTV_upgrades.txt");
+        var upgradesManager = new Manager("anizottiVOTV_other.txt");
         try {
             upgradesManager.setInt("server-upgrade", Server.durability);
             upgradesManager.setInt("scanner-upgrade", Finder.speed);
             upgradesManager.setInt("converter-upgrade", Converter.speed);
-            upgradesManager.setString("cargo", LocationManager.locationToString(CargoManager.targetBlock.getLocation()));
+            if (CargoManager.targetBlock != null) upgradesManager.setString("cargo", LocationManager.locationToString(CargoManager.targetBlock.getLocation()));
+            if (SpawnManager.playerSpawn != null) upgradesManager.setString("p-spawn", LocationManager.locationToString(SpawnManager.playerSpawn.getLocation()));
+            if (SpawnManager.kittiesSpawn != null) upgradesManager.setString("k-spawn", LocationManager.locationToString(SpawnManager.kittiesSpawn.getLocation()));
             upgradesManager.save();
         } catch (IOException e) {
             throw new RuntimeException(e);

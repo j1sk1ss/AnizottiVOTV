@@ -62,7 +62,14 @@ public class Finder extends Computer {
                     var slots = new Margin(36, 2, 4).getSlots();
                     for (var i = 0; i < Math.min(slots.size(), Finder.signals.size()); i++) {
                         var signal = Finder.signals.get(i);
-                        event.getInventory().setItem(slots.get(i), new Item("Signal type " + signal.getType(), "X: " + signal.getX() + " Y: " + signal.getY()));
+                        event.getInventory().setItem(
+                                slots.get(i),
+                                new Item(
+                                        "Signal type " + signal.getType(),
+                                        "X: " + signal.getX() + " Y: " + signal.getY(),
+                                        Material.NETHER_STAR
+                                )
+                        );
                     }
                 }, Material.GOLD_INGOT),
 
@@ -87,40 +94,39 @@ public class Finder extends Computer {
                 }, Material.GOLD_INGOT), // Left
 
                 new LittleButton(new Margin(53, 0, 0), "Scan", "Scan signal", (event, menu) -> {
+                    var player = (Player) event.getWhoClicked();
                     if (Finder.isBusy) {
-                        event.getWhoClicked().sendMessage("Scanner is busy.");
+                        player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1.0f, 1.0f);
+                        player.sendMessage("Scanner is busy.");
                         return;
                     }
 
                     var signal = scanSignal(x + 4, y + 2);
                     if (signal != null) {
                         Finder.isBusy = true;
-                        var player = (Player)event.getWhoClicked();
                         new BukkitRunnable() {
                             int progress = 0;
-                            final int delay = signal.getType() * 5;
+                            final int delay = (signal.getType() + 1) * 15;
 
                             @Override
                             public void run() {
-                                if (progress < delay) {
-                                    progress++;
-                                    player.sendMessage("Progress: " + progress * (100 / delay) + "%");
-                                    if (progress == delay) {
-                                        var signalBody = new Item("Signal", signal.getData());
-                                        Manager.setInteger2Container(signalBody, 1, "is_signal");
-                                        Manager.setInteger2Container(signalBody, signal.getType(), "signal_type");
-                                        Manager.giveItems(signalBody, player);
-                                        moveTelescope(event, 0, 0);
-                                        QuotaManager.completeQuota(1);
-                                        Finder.isBusy = false;
-                                        cancel();
-                                    }
-                                }
+                                player.sendMessage("Scan progress: " + Math.round(((double) progress / delay) * 100) + "%");
+                                if (++progress < delay) return;
+
+                                var signalBody = new Item("Signal", signal.getData());
+                                Manager.setInteger2Container(signalBody, 1, "is_signal");
+                                Manager.setInteger2Container(signalBody, signal.getType(), "signal_type");
+                                Manager.giveItems(signalBody, player);
+
+                                moveTelescope(event, 0, 0);
+                                QuotaManager.completeQuota(1);
+                                Finder.isBusy = false;
+                                this.cancel();
                             }
                         }.runTaskTimer(
                             AnizottiVOTV.getPlugin(AnizottiVOTV.class),
                             0,
-                            (signal.getType() / Math.min(speed, 1)) * (20L * (6 / Math.min(Finder.connectLevel, 1)))
+                            ((signal.getType() + 1) / Math.min(speed, 1)) * (20L * (6 / Math.min(Finder.connectLevel, 1)))
                         );
                     }
                 }, Material.GOLD_INGOT) // Scan signal

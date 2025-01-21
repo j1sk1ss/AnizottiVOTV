@@ -29,3 +29,9 @@ commands:
     usage: "/to-players"
   to-kitties:
     usage: "/to-kitties"
+  fix-all:
+    usage: "/fix-all"
+  player-spawn:
+    usage: "/player-spawn"
+  start-event:
+    usage: "/start-event"

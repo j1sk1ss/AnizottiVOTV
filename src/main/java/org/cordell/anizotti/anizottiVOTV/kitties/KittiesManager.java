@@ -53,12 +53,13 @@ public class KittiesManager implements Listener {
         }
 
         availableActions += count;
-        energy.setProgress(availableActions / 100d);
+        energy.setProgress(Math.max(availableActions / 100d, 1));
     }
 
     private static final Random random = new Random();
 
     public static void stopKitties() {
+        if (energy == null) return;
         energy.removeAll();
     }
 

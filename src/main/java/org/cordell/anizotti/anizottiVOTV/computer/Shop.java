@@ -22,19 +22,19 @@ import java.util.List;
 
 
 public class Shop extends Computer {
-    private static final double flashLightPrice = 100d;
-    private static final double breadPrice = 50d;
-    private static final double soupPrice = 150d;
-    private static final double meatPrice = 300d;
+    private static final double flashLightPrice = 300d;
+    private static final double breadPrice = 100d;
+    private static final double soupPrice = 200d;
+    private static final double meatPrice = 500d;
     private static final double applePrice = 65d;
-    private static final double horsePrice = 1250d;
+    private static final double horsePrice = 1600d;
     private static final double swordPrice = 1000d;
     private static final double shovelPrice = 500d;
-    private static final double cargoPrice = 100d;
+    private static final double cargoPrice = 150d;
     private static final double keyPrice = 500d;
-    private static final double secretPrice = 2500d;
+    private static final double secretPrice = 3500d;
     private static final double musicBoxPrice = 499d;
-    private static final double doorLockUpgrade = 2000d;
+    private static final double doorLockUpgrade = 3500d;
 
     private static final MenuWindow shopUpgradeInterface = new MenuWindow(List.of(
         new Panel(List.of(
@@ -198,11 +198,6 @@ public class Shop extends Computer {
                     "Cost: " + Finder.speed * 1000 + "\nLevel: " + Finder.speed, (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
-                    if (Finder.speed >= 8) {
-                        player.sendMessage("Scanner max upgrade speed");
-                        return;
-                    }
-
                     if (MoneyManager.removeMoney(Finder.speed * 1000, player)) {
                         Finder.speed += 1;
                         menu.getPanel("upgrade").getComponent("Upgrade scan speed", LittleButton.class)
@@ -218,11 +213,6 @@ public class Shop extends Computer {
                     "Cost: " + Converter.speed * 1250 + "\nLevel: " + Converter.speed, (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
-                    if (Converter.speed >= 6) {
-                        player.sendMessage("Converter max upgrade speed");
-                        return;
-                    }
-
                     if (MoneyManager.removeMoney(Converter.speed * 1250, player)) {
                         Converter.speed += 1;
                         menu.getPanel("upgrade").getComponent("Upgrade decode speed", LittleButton.class)

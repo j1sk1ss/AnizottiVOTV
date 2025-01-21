@@ -13,6 +13,7 @@ import org.cordell.anizotti.anizottiVOTV.computer.signals.Finder;
 import org.cordell.anizotti.anizottiVOTV.managment.CargoManager;
 
 import org.cordell.anizotti.anizottiVOTV.managment.DoorManager;
+import org.cordell.anizotti.anizottiVOTV.managment.SpawnManager;
 import org.j1sk1ss.itemmanager.manager.Manager;
 
 
@@ -27,6 +28,13 @@ public class AdminManager implements Listener {
 
         var option = Manager.getName(item);
         switch (option) {
+            case "team-spawn":
+                switch (String.join("", Manager.getLoreLines(item))) {
+                    case "p" -> SpawnManager.playerSpawn = block;
+                    case "k" -> SpawnManager.kittiesSpawn = block;
+                }
+                System.out.println("Spawn for " + String.join("", Manager.getLoreLines(item)) + " set!");
+                break;
             case "server-spawn":
                 var server = new Server(block, String.join("", Manager.getLoreLines(item)));
                 ComputerManager.computers.add(server);

@@ -21,13 +21,13 @@ public class EatManager implements Listener {
         var foodData = playerFoodData.computeIfAbsent(player, k -> new HashMap<>());
 
         var overeat = foodData.getOrDefault(foodType, 0);
-        if (++overeat > 48) {
+        if (++overeat > 24) {
             player.sendMessage("I don`t want to eat this...");
             event.setCancelled(true);
             return;
         }
-        foodData.put(foodType, overeat);
 
+        foodData.put(foodType, overeat);
         foodData.forEach((type, value) -> {
             if (!type.equals(foodType) && value > 0) {
                 foodData.put(type, value - 1);

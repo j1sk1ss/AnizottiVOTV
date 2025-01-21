@@ -14,10 +14,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import org.cordell.anizotti.anizottiVOTV.AnizottiVOTV;
 import org.cordell.anizotti.anizottiVOTV.Utils;
 import org.cordell.anizotti.anizottiVOTV.common.BlockManager;
+
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
 
@@ -58,19 +60,34 @@ public class CargoManager implements Listener {
             int progress = 0;
             @Override
             public void run() {
-                if (progress < deliveryTime) {
-                    progress++;
-                    if (progress == deliveryTime) {
-                        try {
-                            MoneyManager.addMoney(parseCargo(cargoBlock), sender);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                if (++progress < deliveryTime) return;
+                try {
+                    MoneyManager.addMoney(parseCargo(cargoBlock), sender);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                var cargoFalling = cargoBlock.getWorld().spawnFallingBlock(
+                    cargoBlock.getLocation(),
+                    cargoBlock.getBlockData()
+                );
+
+                cargoBlock.setType(Material.AIR);
+                new BukkitRunnable() {
+                    int ticks = 0;
+
+                    @Override
+                    public void run() {
+                        if (++ticks >= 200) {
+                            cargoFalling.remove();
+                            this.cancel();
+                            return;
                         }
 
-                        cargoBlock.setType(Material.AIR);
-                        cancel();
+                        cargoFalling.setVelocity(new Vector(0, 0.5, 0));
                     }
-                }
+                }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 1L);
+                this.cancel();
             }
         }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 20L);
         return deliveryTime;
@@ -109,7 +126,9 @@ public class CargoManager implements Listener {
 
         if (targetBlock != null) {
             if (player.getInventory().getItemInMainHand().getType() == Material.BEEHIVE && block.getLocation().equals(targetBlock.getLocation())) {
-                player.getInventory().setItemInMainHand(null);
+                var amount = player.getInventory().getItemInMainHand().getAmount();
+                if (amount == 1) player.getInventory().setItemInMainHand(null);
+                else player.getInventory().getItemInMainHand().setAmount(amount - 1);
                 var blockAbove = block.getRelative(0, 1, 0);
                 blockAbove.setType(Material.BEEHIVE);
                 BlockManager.addDataToBlock(blockAbove, "is_cargo", "true");
@@ -162,7 +181,7 @@ public class CargoManager implements Listener {
         block.setType(Material.AIR);
     }
 
-    private static final int signalPrice = 50;
+    private static final int signalPrice = 75;
 
     private static int parseCargo(Block block) {
         int price = 0;
@@ -174,7 +193,7 @@ public class CargoManager implements Listener {
                     var isSignal = Manager.getIntegerFromContainer(item, "is_signal");
                     if (isSignal != -1) {
                         var tempPrice = signalPrice;
-                        var signalType = Manager.getIntegerFromContainer(item, "signal_type");
+                        var signalType = Manager.getIntegerFromContainer(item, "signal_type") + 1;
                         var decrypted = Manager.getIntegerFromContainer(item, "is_decrypted");
                         if (decrypted != -1) {
                             tempPrice *= 2;

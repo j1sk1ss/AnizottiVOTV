@@ -1,16 +1,21 @@
 package org.cordell.anizotti.anizottiVOTV.admin;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import org.cordell.anizotti.anizottiVOTV.computer.ComputerManager;
+import org.cordell.anizotti.anizottiVOTV.computer.Generator;
+import org.cordell.anizotti.anizottiVOTV.computer.Server;
 import org.cordell.anizotti.anizottiVOTV.kitties.KittiesManager;
+import org.cordell.anizotti.anizottiVOTV.managment.MainManager;
 import org.cordell.anizotti.anizottiVOTV.managment.MoneyManager;
 import org.cordell.anizotti.anizottiVOTV.managment.QuotaManager;
 import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
+
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +29,19 @@ public class CommandManager implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         var player = (Player) commandSender;
         switch (command.getName()) {
+            case "fix-all" -> {
+                if (Generator.main != null) {
+                    Generator.main.isWork = true;
+                    ComputerManager.turnOnComputers();
+                }
+
+                for (var ser : Server.servers) {
+                    if (!ser.isWork) {
+                        ser.isWork = true;
+                        ComputerManager.connectComputers(1);
+                    }
+                }
+            }
             case "to-players" -> {
                 var targetPlayer = Bukkit.getPlayer(strings[0]);
                 if (targetPlayer == null) return false;
@@ -44,11 +62,10 @@ public class CommandManager implements CommandExecutor {
                     TeamManager.removePlayerFromPlayers(targetPlayer);
                     QuotaManager.getQuotaBar().removePlayer(targetPlayer);
                 }
-
-                Manager.giveItems(new Item("KIT-MENU", "KIT-MENU", Material.DIAMOND), targetPlayer);
-                Objects.requireNonNull(targetPlayer.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(0.5);
             }
+            case "start-event" -> MainManager.startEvent();
             case "lock-door" -> Manager.giveItems(new Item("lock-door", strings[0]), player);
+            case "player-spawn" -> Manager.giveItems(new Item("team-spawn", strings[0]), player);
             case "status-spawn" -> Manager.giveItems(new Item("status-spawn", "status-spawn"), player);
             case "server-spawn" -> Manager.giveItems(new Item("server-spawn", strings[0]), player);
             case "generator-spawn" -> Manager.giveItems(new Item("generator-spawn", "generator-spawn"), player);

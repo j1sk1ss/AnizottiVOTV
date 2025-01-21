@@ -28,7 +28,7 @@ public class QuotaManager {
     public static void completeQuota(int count) {
         if (quota != null) {
             QuotaManager.currentProgress += count;
-            quota.setProgress((double) QuotaManager.currentProgress / QuotaManager.target);
+            quota.setProgress(Math.max((double) QuotaManager.currentProgress / QuotaManager.target, 1));
             if (QuotaManager.currentProgress >= QuotaManager.target) {
                 for (var p : Bukkit.getOnlinePlayers()) {
                     if (!TeamManager.isPlayer(p)) continue;
