@@ -2,7 +2,6 @@ package org.cordell.anizotti.anizottiVOTV;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.cordell.anizotti.anizottiVOTV.admin.AdminManager;
 import org.cordell.anizotti.anizottiVOTV.admin.CommandManager;
 import org.cordell.anizotti.anizottiVOTV.common.LocationManager;
@@ -88,6 +87,7 @@ public final class AnizottiVOTV extends JavaPlugin {
         Generator.generatorCrush();
         DaysManager.startDayTimer();
         KittiesManager.startRandomEvents();
+        KittiesManager.startEnergyGrow();
         FlashLightManager.startLightingTask();
 
         ComputerManager.turnOnComputers();
@@ -97,6 +97,7 @@ public final class AnizottiVOTV extends JavaPlugin {
     @Override
     public void onDisable() {
         QuotaManager.stopQuota();
+        KittiesManager.stopKitties();
         var locationManager = new Manager("anizottiVOTV_computers.txt");
         for (var computer : ComputerManager.computers) {
             try {
@@ -118,6 +119,10 @@ public final class AnizottiVOTV extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         upgradesManager.stop();
+        for (var p : Bukkit.getOnlinePlayers()) {
+            ItemManager.returnItems(p);
+        }
     }
 }

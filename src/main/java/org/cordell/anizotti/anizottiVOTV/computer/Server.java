@@ -84,11 +84,11 @@ public class Server extends Computer {
         ),
         new Panel(
             List.of(
-                new LittleButton(new Margin(0, 0, 0), "Destroy", "Costs 5 energy", (event, menu) -> {
+                new LittleButton(new Margin(4, 0, 0), "Destroy", "Costs 15 energy", (event, menu) -> {
                     var player = (Player)event.getWhoClicked();
                     var server = getServer(Utils.getInventoryTitle(event).split(" ")[1]);
                     if (server != null) {
-                        if (KittiesManager.useEnergy(5)) {
+                        if (KittiesManager.useEnergy(15)) {
                             server.isWork = false;
                             server.baseBlock.getWorld().playSound(server.baseBlock.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5f, 1.0f);
                             player.closeInventory();

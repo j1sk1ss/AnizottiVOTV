@@ -30,9 +30,14 @@ public class KittiesUI implements Listener {
             new LittleButton(new Margin(0, 0, 0), "Energy", "Points: ?", (event, menu) -> {
                 menu.getPanel("kitties-ui").getComponent("Energy", LittleButton.class).setLore("Points: " + KittiesManager.getEnergy());
                 menu.getPanel("kitties-ui").getView((Player) event.getWhoClicked());
-            }, Material.REDSTONE_BLOCK),
+            }, Material.GOLD_INGOT),
             new LittleButton(new Margin(1, 0, 0), "Invisible", "Become invisible for 2 minutes\nCosts 2 energy", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
+                if (player.isInvisible()) {
+                    player.sendMessage("You already invisible!");
+                    return;
+                }
+
                 if (KittiesManager.useEnergy(2)) {
                     player.setInvisible(true);
                     player.setCustomNameVisible(false);
@@ -47,7 +52,7 @@ public class KittiesUI implements Listener {
                 else {
                     player.sendMessage("You don't have enough energy!");
                 }
-            }, Material.OMINOUS_BOTTLE),
+            }, Material.GOLD_INGOT),
             new LittleButton(new Margin(2, 0, 0), "Night vision", "Night vision for 2 minute\nCosts 1 energy", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 if (KittiesManager.useEnergy(1)) {
@@ -56,7 +61,7 @@ public class KittiesUI implements Listener {
                 else {
                     player.sendMessage("You don't have enough energy!");
                 }
-            }, Material.ENDER_EYE),
+            }, Material.GOLD_INGOT),
             new LittleButton(new Margin(3, 0, 0), "Regeneration", "Regeneration for 2 minute\nCosts 1 energy", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 if (KittiesManager.useEnergy(1)) {
@@ -65,7 +70,7 @@ public class KittiesUI implements Listener {
                 else {
                     player.sendMessage("You don't have enough energy!");
                 }
-            }, Material.LINGERING_POTION),
+            }, Material.GOLD_INGOT),
             new LittleButton(new Margin(4, 0, 0), "Jump boost", "Jump boost for 2 minute\nCosts 1 energy", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 if (KittiesManager.useEnergy(1)) {
@@ -74,20 +79,20 @@ public class KittiesUI implements Listener {
                 else {
                     player.sendMessage("You don't have enough energy!");
                 }
-            }, Material.IRON_BOOTS),
+            }, Material.GOLD_INGOT),
             new LittleButton(new Margin(5, 0, 0), "Meow", "Do meow", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_CAT_AMBIENT, 1.0f, 1.0f);
-            }, Material.MUSIC_DISC_CAT),
-            new LittleButton(new Margin(6, 0, 0), "Make level 1 key", "Costs 10 energy", (event, menu) -> {
+            }, Material.GOLD_INGOT),
+            new LittleButton(new Margin(6, 0, 0), "Make level 1 key", "Costs 50 energy", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
-                if (KittiesManager.useEnergy(10)) {
+                if (KittiesManager.useEnergy(50)) {
                     DoorManager.giveKey(player, 1);
                 }
                 else {
                     player.sendMessage("You don't have enough energy!");
                 }
-            }, Material.TRIAL_KEY),
+            }, Material.GOLD_INGOT),
             new LittleButton(new Margin(7, 0, 0), "Create stand", "Costs 6 energy", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 if (KittiesManager.useEnergy(6)) {
@@ -99,7 +104,7 @@ public class KittiesUI implements Listener {
                 else {
                     player.sendMessage("You don't have enough energy!");
                 }
-            }, Material.ARMOR_STAND),
+            }, Material.GOLD_INGOT),
             new LittleButton(new Margin(8, 0, 0), "Create fish", "Costs 1 energy", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 if (KittiesManager.useEnergy(1)) {
@@ -108,8 +113,8 @@ public class KittiesUI implements Listener {
                 else {
                     player.sendMessage("You don't have enough energy!");
                 }
-            }, Material.COOKED_SALMON)
-        ), "kitties-ui", MenuSizes.OneLine)
+            }, Material.GOLD_INGOT)
+        ), "kitties-ui", MenuSizes.OneLine, "\u10F4")
     ));
 
     public static void openKittiesMenu(Player player) {

@@ -7,7 +7,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.cordell.anizotti.anizottiVOTV.kitties.KittiesManager;
 import org.cordell.anizotti.anizottiVOTV.managment.MoneyManager;
+import org.cordell.anizotti.anizottiVOTV.managment.QuotaManager;
 import org.cordell.anizotti.anizottiVOTV.managment.TeamManager;
 import org.j1sk1ss.itemmanager.manager.Item;
 import org.j1sk1ss.itemmanager.manager.Manager;
@@ -31,13 +33,18 @@ public class CommandManager implements CommandExecutor {
                     targetPlayer.setInvisible(false);
                     targetPlayer.setCustomNameVisible(true);
                     Objects.requireNonNull(targetPlayer.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(1);
+                    KittiesManager.getEnergyBar().removePlayer(targetPlayer);
                 }
             }
             case "to-kitties" -> {
                 var targetPlayer = Bukkit.getPlayer(strings[0]);
                 if (targetPlayer == null) return false;
                 if (!TeamManager.isKittie(targetPlayer)) TeamManager.addPlayer2Kitties(targetPlayer);
-                if (TeamManager.isPlayer(targetPlayer)) TeamManager.removePlayerFromPlayers(targetPlayer);
+                if (TeamManager.isPlayer(targetPlayer)) {
+                    TeamManager.removePlayerFromPlayers(targetPlayer);
+                    QuotaManager.getQuotaBar().removePlayer(targetPlayer);
+                }
+
                 Manager.giveItems(new Item("KIT-MENU", "KIT-MENU", Material.DIAMOND), targetPlayer);
                 Objects.requireNonNull(targetPlayer.getAttribute(Attribute.GENERIC_SCALE)).setBaseValue(0.5);
             }

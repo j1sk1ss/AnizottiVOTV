@@ -54,10 +54,10 @@ public class Generator extends Computer {
         ),
         new Panel(
             List.of(
-                new LittleButton(new Margin(0, 0, 0), "Turn off", "Costs 15 energy", (event, menu) -> {
+                new LittleButton(new Margin(4, 0, 0), "Turn off", "Costs 30 energy", (event, menu) -> {
                     var player = (Player)event.getWhoClicked();
                     if (main != null) {
-                        if (KittiesManager.useEnergy(15)) {
+                        if (KittiesManager.useEnergy(30)) {
                             main.isWork = false;
                             player.closeInventory();
                             ComputerManager.turnOffComputers();

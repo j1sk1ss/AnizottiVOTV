@@ -35,7 +35,6 @@ public class KittiesManager implements Listener {
 
     public static boolean useEnergy(int count) {
         if (availableActions < count) return false;
-        TeamManager.informKitties("Used " + count + " points of energy");
         availableActions -= count;
         if (energy != null) energy.setProgress(availableActions / 100d);
         return true;
@@ -50,22 +49,36 @@ public class KittiesManager implements Listener {
 
         energy.removeAll();
         for (var player : Bukkit.getOnlinePlayers()) {
-            if (TeamManager.isPlayer(player)) continue;
-            energy.addPlayer(player);
+            if (TeamManager.isKittie(player)) energy.addPlayer(player);
         }
 
         availableActions += count;
         energy.setProgress(availableActions / 100d);
-        TeamManager.informKitties("Earned energy");
     }
 
     private static final Random random = new Random();
+
+    public static void stopKitties() {
+        energy.removeAll();
+    }
+
+    public static BossBar getEnergyBar() {
+        return energy;
+    }
+
+    public static void startEnergyGrow() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                earnEnergy(1 + DaysManager.day);
+            }
+        }.runTaskTimer(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0L, 20L * 10);
+    }
 
     public static void startRandomEvents() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                earnEnergy(10 + DaysManager.day);
                 for (var player : Bukkit.getOnlinePlayers()) {
                     if (!isNight(player.getWorld())) continue;
                     if (TeamManager.isKittie(player)) continue;
@@ -78,7 +91,7 @@ public class KittiesManager implements Listener {
                     }
 
                     if (DaysManager.day >= 6) {
-                        if (eventChance < 100) {
+                        if (eventChance < 50) {
                             Generator.main.isWork = false;
                             ComputerManager.turnOffComputers();
                         }
@@ -92,7 +105,7 @@ public class KittiesManager implements Listener {
                     }
 
                     if (DaysManager.day >= 10) {
-                        if (eventChance < 249) {
+                        if (eventChance < 100) {
                             for (int i = 0; i < 4; i++) {
                                 var server = Server.servers.get(random.nextInt(Server.servers.size()));
                                 if (server.isWork) {
@@ -159,11 +172,11 @@ public class KittiesManager implements Listener {
     @EventHandler
     private void interactKittiesMenu(PlayerInteractEvent event) {
         var player = event.getPlayer();
-        if (TeamManager.isPlayer(player)) return;
         var item = player.getInventory().getItemInMainHand();
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
 
         if (item.getItemMeta() == null) return;
+        if (!TeamManager.isKittie(player)) return;
         if (Manager.getName(item).equals("KIT-MENU")) {
             KittiesUI.openKittiesMenu(player);
             event.setCancelled(true);

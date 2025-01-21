@@ -19,12 +19,14 @@ public class PlayerManager implements Listener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        ItemManager.takeAllItems(event.getPlayer());
     }
 
     @EventHandler
     private void onPlayerDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player player && event.getEntity() instanceof Player) {
-            if (TeamManager.isKittie(player)) event.setCancelled(true);
+            if (TeamManager.isKittie(player)) event.setDamage(0.1);
         }
     }
 }

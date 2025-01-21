@@ -31,6 +31,10 @@ public class QuotaManager {
         quota.removeAll();
     }
 
+    public static BossBar getQuotaBar() {
+        return quota;
+    }
+
     public static boolean isCompleteQuota() {
         if (quota == null) return true;
         return quota.getProgress() == 100.0;
