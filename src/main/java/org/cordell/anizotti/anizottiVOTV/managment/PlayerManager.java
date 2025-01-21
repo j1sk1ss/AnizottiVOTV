@@ -16,6 +16,7 @@ public class PlayerManager implements Listener {
         try {
             MoneyManager.addMoney(200, event.getPlayer());
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
+            TeamManager.addPlayer2Players(event.getPlayer());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

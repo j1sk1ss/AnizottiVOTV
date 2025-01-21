@@ -21,6 +21,7 @@ public class ItemManager {
     }
 
     public static void returnItems(Player p) {
+        if (!items.containsKey(p)) return;
         p.getInventory().clear();
         for (var item : items.get(p)) {
             if (item != null) p.getInventory().addItem(item);

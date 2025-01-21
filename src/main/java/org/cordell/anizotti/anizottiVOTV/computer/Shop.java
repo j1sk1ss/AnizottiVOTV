@@ -178,7 +178,7 @@ public class Shop extends Computer {
                     throw new RuntimeException(e);
                 }
             }, Material.OMINOUS_TRIAL_KEY),
-            new LittleButton(new Margin(13, 0, 0), "Moneys", "Balance: ", (event, menu) -> {
+            new LittleButton(new Margin(26, 0, 0), "Moneys", "Balance: ", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 try {
                     menu.getPanel("shop").getComponent("Moneys", LittleButton.class).setLore("Balance: " + MoneyManager.getMoney(player));
@@ -186,12 +186,12 @@ public class Shop extends Computer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }, Material.OMINOUS_TRIAL_KEY),
-            new LittleButton(new Margin(17, 0, 0), "Upgrades", "", (event, menu) -> {
+            }, Material.DIAMOND),
+            new LittleButton(new Margin(25, 0, 0), "Upgrades", "", (event, menu) -> {
                 var player = (Player)event.getWhoClicked();
                 menu.getPanel("upgrade").getView(player);
             }, Material.ARROW)
-        ), "shop", MenuSizes.TwoLines),
+        ), "shop", MenuSizes.ThreeLines),
         new Panel(List.of(
             new LittleButton(
                     new Margin(0, 0, 0), "Upgrade scan speed",

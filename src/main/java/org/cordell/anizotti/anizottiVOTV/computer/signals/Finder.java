@@ -48,7 +48,7 @@ public class Finder extends Computer {
                 if (signals.size() >= MAX_SIGNALS) return;
                 var curSignals = Signals.signals.get(DaysManager.day);
                 if (curSignals == null) curSignals = Signals.defaultSignals;
-                signals.add(generateSignal(50, 50, curSignals.get(new Random().nextInt(Signals.signals.get(DaysManager.day).size()))));
+                signals.add(generateSignal(50, 50, curSignals.get(new Random().nextInt(Signals.signals.get(DaysManager.day).size())), new Random().nextInt(DaysManager.day)));
             }
         }.runTaskTimerAsynchronously(AnizottiVOTV.getPlugin(AnizottiVOTV.class), 0, 60 * 20L);
     }
@@ -56,7 +56,15 @@ public class Finder extends Computer {
     private static final MenuWindow finderInterface = new MenuWindow(List.of(
         new Panel(
             List.of(
-                new ClickArea(new Margin(0, 4, 8), null, "space", ""), // Signals
+                new ClickArea(new Margin(0, 4, 8), null, "space", ""), // Space
+
+                new LittleButton(new Margin(41, 0, 0), "Refresh", "Refresh signals", (event, menu) -> {
+                    var slots = new Margin(36, 2, 4).getSlots();
+                    for (var i = 0; i < Math.min(slots.size(), Finder.signals.size()); i++) {
+                        var signal = Finder.signals.get(i);
+                        event.getInventory().setItem(slots.get(i), new Item("Signal type " + signal.getType(), "X: " + signal.getX() + " Y: " + signal.getY()));
+                    }
+                }, Material.GOLD_INGOT),
 
                 new LittleButton(new Margin(51, 0, 0), "Down", "Set down", (event, menu) -> {
                     event.getWhoClicked().sendMessage(x + ":" + y);
@@ -137,7 +145,7 @@ public class Finder extends Computer {
         inventory.setItem(13, new Item("", "", Material.GREEN_STAINED_GLASS_PANE));
 
         for (var sig : signals) {
-            if (sig.getY() < y || sig.getY() >= y + 4 || sig.getX() < x || sig.getX() >= x + 8) continue;
+            if (sig.getY() < y || sig.getY() >= y + 4 || sig.getX() < x || sig.getX() > x + 8) continue;
             inventory.setItem((sig.getY() - y) * 9 + sig.getX() - x, new Item("signal", "Type: " + sig.getType(), Material.RED_STAINED_GLASS_PANE));
         }
     }
@@ -179,10 +187,5 @@ public class Finder extends Computer {
         }
 
         finderInterface.getPanel("finder").getView(player);
-        var message = new StringBuilder();
-        for (var sig : Finder.signals)
-            message.append("Found signal: ").append(sig.getX()).append(" ").append(sig.getY()).append(" | Type: ").append(sig.getType()).append("\n");
-
-        player.sendMessage(message.toString());
     }
 }
